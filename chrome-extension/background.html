@@ -1,0 +1,90 @@
+<html>
+  <script>
+
+    var currentSite = null;
+    var startTime = null;
+    var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
+
+    // TODO(nav): Make this more reasonable default and a user pref.
+    var updateInterval = 1000 * 60;  // 1 minute.
+
+    function getSiteFromUrl(url) {
+      var match = url.match(siteRegexp);
+      if (match) {
+        return match[1];
+      }
+      return null;
+    }
+
+    function updateCounter(tabId) {
+      chrome.tabs.get(tabId, function(tab) {
+        var site = getSiteFromUrl(tab.url);
+        if (site == null) {
+          console.log("Unable to update counter. Malformed url.");
+          return;
+        }
+
+        if (currentSite == null) {
+          currentSite = site;
+          startTime = new Date();
+        }
+
+        // Site has changed. Store the time for the last site.
+        if (site != currentSite) {
+          var now = new Date();
+          var delta = now.getTime() - startTime.getTime();
+          updateTime(currentSite, delta/1000);
+
+          currentSite = site;
+          startTime = now;
+        }
+      });
+    }
+
+    function sendStatistics() {
+      var xhr = new XMLHttpRequest();
+      var params = "sites=" + escape(localStorage.sites);
+      xhr.open("POST", "http://localhost:8081/stats/update", false);
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhr.send(params);
+      if (xhr.status == 200) {
+        console.log("Successfully updated statistics.");
+        localStorage.sites = JSON.stringify({});
+      } else {
+        console.log("Something went wrong with updating stats: " + xhr.status);
+      }
+    }
+
+    function updateTime(site, seconds) {
+      var sites = JSON.parse(localStorage.sites);
+      if (!sites[site]) {
+        sites[site] = 0;
+      }
+      sites[site] = sites[site] + seconds;
+      localStorage.sites = JSON.stringify(sites);
+      console.log('Sites = ' + localStorage.sites);
+    }
+
+    function initialize() {
+      if (!localStorage.sites) {
+        localStorage.sites = JSON.stringify({});
+      }
+
+      chrome.tabs.onSelectionChanged.addListener(
+      function(tabId, selectionInfo) {
+        console.log("Tab changed");
+        updateCounter(tabId);
+      });
+
+      chrome.browserAction.onClicked.addListener(function(tab) {
+        // Force a sending of the stats.
+        sendStatistics();
+      });
+
+      window.setInterval(sendStatistics, updateInterval);
+    }
+
+  </script>
+  <body onload="initialize()">
+  </body>
+</html>

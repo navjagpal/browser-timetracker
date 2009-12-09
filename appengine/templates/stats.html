@@ -1,0 +1,18 @@
+<html>
+  <body>
+    User: {{user}}<br/>
+    Last Update: {{last_update|timesince}}<br/>
+    <table>
+      <tr>
+        <th>Site</th>
+        <th>Minutes</th>
+      </tr>
+      {% for site_time in site_times %}
+      <tr>
+        <td>{{site_time.site}}</td>
+        <td>{{site_time.minutes|floatformat}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

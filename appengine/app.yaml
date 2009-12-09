@@ -1,0 +1,9 @@
+application: browsing-timetracker
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /stats.*
+  script: stats.py
+  login: required
