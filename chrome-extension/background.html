@@ -1,15 +1,20 @@
 <html>
   <script>
-
     var currentSite = null;
     var currentTabId = null;
     var startTime = null;
     var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
 
-    // TODO(nav): Make this more reasonable default and a user pref.
+    // TODO(nav): Make sendStatsInterval a user preference.
     var sendStatsInterval = 1000 * 60;  // 1 minute.
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
+    /**
+     * Returns just the site/domain from the url. Includes the protocol.
+     * chrome://extensions/some/other?blah=ffdf -> chrome://extensions
+     * @param {string} url The URL of the page, including the protocol.
+     * @return {string} The site, including protocol, but not paths.
+     */
     function getSiteFromUrl(url) {
       var match = url.match(siteRegexp);
       if (match) {
@@ -18,6 +23,9 @@
       return null;
     }
 
+    /**
+     * Updates the counter for the current tab.
+     */
     function updateCounter() {
       if (currentTabId == null) {
         return;
@@ -30,20 +38,31 @@
           return;
         }
 
+        /* We can't update any counters if this is the first time visiting any
+         * site. This happens on browser startup. Initialize some variables so
+         * we can perform an update next time. */
         if (currentSite == null) {
           currentSite = site;
           startTime = new Date();
           return;
         }
 
+        /* Update the time spent for this site by comparing the current time to
+         * the last time we were ran. */
         var now = new Date();
         var delta = now.getTime() - startTime.getTime();
         updateTime(currentSite, delta/1000);
+
+        /* This function could have been called as the result of a tab change,
+         * which means the site may have changed. */
         currentSite = site;
         startTime = now;
       });
     }
 
+    /**
+     * Sends statistics to the server. If there are no problems in sending the
+     * data, we clear local storage. */
     function sendStatistics() {
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites);
@@ -58,6 +77,11 @@
       }
     }
 
+    /**
+     * Updates the amount of time we have spent on a given site.
+     * @param {string} site The site to update.
+     * @param {float} seconds The number of seconds to add to the counter.
+     */
     function updateTime(site, seconds) {
       var sites = JSON.parse(localStorage.sites);
       if (!sites[site]) {
@@ -67,11 +91,16 @@
       localStorage.sites = JSON.stringify(sites);
     }
 
+    /**
+     * Initailized our storage and sets up tab listeners.
+     */
     function initialize() {
       if (!localStorage.sites) {
         localStorage.sites = JSON.stringify({});
       }
 
+      /* Add some listeners for tab changing events. We want to update our
+      *  counters when this sort of stuff happens. */
       chrome.tabs.onSelectionChanged.addListener(
       function(tabId, selectionInfo) {
         console.log("Tab changed");
@@ -79,8 +108,15 @@
         updateCounter();
       });
 
-      // Force an update of the counter every minute. Otherwise, the counter
-      // only updates for selection or URL changes.
+      chrome.tabs.onUpdated.addListener(
+      function(tabId, changeInfo, tab) {
+        console.log("Tab updated");
+        currentTabId = tabId;
+        updateCounter();
+      });
+
+      /* Force an update of the counter every minute. Otherwise, the counter
+         only updates for selection or URL changes. */
       window.setInterval(updateCounter, updateCounterInterval);
 
       // Send statistics periodically.
