@@ -25,7 +25,7 @@ class UserInfo(db.Model):
 class View(webapp.RequestHandler):
 
   def get(self):
-    site_times = SiteTime.gql('WHERE user = :1 AND day = :2 ORDER BY seconds',
+    site_times = SiteTime.gql('WHERE user = :1 AND day = :2 ORDER BY second DESC',
                               users.get_current_user(),
                               datetime.datetime.now().date())
 
