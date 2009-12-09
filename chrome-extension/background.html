@@ -63,12 +63,20 @@
     /**
      * Sends statistics to the server. If there are no problems in sending the
      * data, we clear local storage. */
-    function sendStatistics() {
+     function sendStatistics() {
+      console.log("Sending statistics.");
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites);
       xhr.open("POST", "http://browser-timetracker.appspot.com/stats/update", false);
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send(params);
+      try {
+        xhr.send(params);
+      } catch (e) {
+        console.log("Exception when sending stats to server.");
+        chrome.browserAction.setIcon({path: 'images/icon_error.png'});
+        return;
+      }
+      chrome.browserAction.setIcon({path: 'images/icon.png'});
       if (xhr.status == 200) {
         console.log("Successfully updated statistics.");
         localStorage.sites = JSON.stringify({});
@@ -110,9 +118,14 @@
 
       chrome.tabs.onUpdated.addListener(
       function(tabId, changeInfo, tab) {
-        console.log("Tab updated");
-        currentTabId = tabId;
-        updateCounter();
+        if (tabId == currentTabId) {
+          console.log("Tab updated");
+          updateCounter();
+        }
+      });
+
+      chrome.browserAction.onClicked.addListener(function(tab) {
+        sendStatistics();
       });
 
       /* Force an update of the counter every minute. Otherwise, the counter

@@ -57,6 +57,7 @@ class View(webapp.RequestHandler):
     template_values = {
         'user': user,
         'last_update': last_update,
+        'logout_url': users.create_logout_url("/"),
         'site_times': [{'site': x.site,
                         'minutes': x.seconds/float(60)} for x in site_times]
       }
