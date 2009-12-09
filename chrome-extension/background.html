@@ -44,7 +44,7 @@
     function sendStatistics() {
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites);
-      xhr.open("POST", "http://localhost:8081/stats/update", false);
+      xhr.open("POST", "http://browser-timetracker.appspot.com/stats/update", false);
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xhr.send(params);
       if (xhr.status == 200) {
