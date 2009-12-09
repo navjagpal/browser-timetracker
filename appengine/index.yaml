@@ -15,3 +15,10 @@ indexes:
   - name: day
   - name: user
   - name: seconds
+
+- kind: SiteTime
+  properties:
+  - name: day
+  - name: user
+  - name: seconds
+    direction: desc
