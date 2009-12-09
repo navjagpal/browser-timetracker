@@ -2,11 +2,13 @@
   <script>
 
     var currentSite = null;
+    var currentTabId = null;
     var startTime = null;
     var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
 
     // TODO(nav): Make this more reasonable default and a user pref.
-    var updateInterval = 1000 * 60;  // 1 minute.
+    var sendStatsInterval = 1000 * 60;  // 1 minute.
+    var updateCounterInterval = 1000 * 60;  // 1 minute.
 
     function getSiteFromUrl(url) {
       var match = url.match(siteRegexp);
@@ -16,8 +18,12 @@
       return null;
     }
 
-    function updateCounter(tabId) {
-      chrome.tabs.get(tabId, function(tab) {
+    function updateCounter() {
+      if (currentTabId == null) {
+        return;
+      }
+
+      chrome.tabs.get(currentTabId, function(tab) {
         var site = getSiteFromUrl(tab.url);
         if (site == null) {
           console.log("Unable to update counter. Malformed url.");
@@ -27,17 +33,14 @@
         if (currentSite == null) {
           currentSite = site;
           startTime = new Date();
+          return;
         }
 
-        // Site has changed. Store the time for the last site.
-        if (site != currentSite) {
-          var now = new Date();
-          var delta = now.getTime() - startTime.getTime();
-          updateTime(currentSite, delta/1000);
-
-          currentSite = site;
-          startTime = now;
-        }
+        var now = new Date();
+        var delta = now.getTime() - startTime.getTime();
+        updateTime(currentSite, delta/1000);
+        currentSite = site;
+        startTime = now;
       });
     }
 
@@ -62,7 +65,6 @@
       }
       sites[site] = sites[site] + seconds;
       localStorage.sites = JSON.stringify(sites);
-      console.log('Sites = ' + localStorage.sites);
     }
 
     function initialize() {
@@ -73,15 +75,16 @@
       chrome.tabs.onSelectionChanged.addListener(
       function(tabId, selectionInfo) {
         console.log("Tab changed");
-        updateCounter(tabId);
+        currentTabId = tabId;
+        updateCounter();
       });
 
-      chrome.browserAction.onClicked.addListener(function(tab) {
-        // Force a sending of the stats.
-        sendStatistics();
-      });
+      // Force an update of the counter every minute. Otherwise, the counter
+      // only updates for selection or URL changes.
+      window.setInterval(updateCounter, updateCounterInterval);
 
-      window.setInterval(sendStatistics, updateInterval);
+      // Send statistics periodically.
+      window.setInterval(sendStatistics, sendStatsInterval);
     }
 
   </script>
