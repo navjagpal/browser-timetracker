@@ -32,32 +32,38 @@
       }
 
       chrome.tabs.get(currentTabId, function(tab) {
-        var site = getSiteFromUrl(tab.url);
-        if (site == null) {
-          console.log("Unable to update counter. Malformed url.");
-          return;
-        }
+        /* Make sure we're on the focused window, otherwise we're recording bogus stats. */
+        chrome.windows.get(tab.windowId, function(window) {
+          if (!window.focused) {
+            return;
+          }
+					var site = getSiteFromUrl(tab.url);
+					if (site == null) {
+						console.log("Unable to update counter. Malformed url.");
+						return;
+					}
 
-        /* We can't update any counters if this is the first time visiting any
-         * site. This happens on browser startup. Initialize some variables so
-         * we can perform an update next time. */
-        if (currentSite == null) {
-          currentSite = site;
-          startTime = new Date();
-          return;
-        }
+					/* We can't update any counters if this is the first time visiting any
+					 * site. This happens on browser startup. Initialize some variables so
+					 * we can perform an update next time. */
+					if (currentSite == null) {
+						currentSite = site;
+						startTime = new Date();
+						return;
+					}
 
-        /* Update the time spent for this site by comparing the current time to
-         * the last time we were ran. */
-        var now = new Date();
-        var delta = now.getTime() - startTime.getTime();
-        updateTime(currentSite, delta/1000);
+					/* Update the time spent for this site by comparing the current time to
+					 * the last time we were ran. */
+					var now = new Date();
+					var delta = now.getTime() - startTime.getTime();
+					updateTime(currentSite, delta/1000);
 
-        /* This function could have been called as the result of a tab change,
-         * which means the site may have changed. */
-        currentSite = site;
-        startTime = now;
-      });
+					/* This function could have been called as the result of a tab change,
+					 * which means the site may have changed. */
+					currentSite = site;
+					startTime = now;
+				});
+			});
     }
 
     /**
