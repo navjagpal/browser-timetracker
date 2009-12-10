@@ -7,11 +7,49 @@ iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?no
                             escape(new Date().getTime()/1000));
 iframe.setAttribute("width", "400px");
 iframe.setAttribute("height", "400px");
-document.body.appendChild(iframe);
+document.getElementById("stats").appendChild(iframe);
+ }
+
+ function sendStats() {
+   chrome.extension.sendRequest({action: "sendStats"}, function(response) {
+   });
+ }
+
+ function togglePause() {
+   console.log("In toggle pause");
+   console.log("Value = " + localStorage["paused"]);
+   if (localStorage["paused"] == "false") {
+     console.log("Setting to Resume");
+     localStorage["paused"] = "true";
+     document.getElementById("toggle_pause").innerHTML = "Resume Timer";
+     } else if (localStorage["paused"] == "true"){
+     console.log("Setting to Pause");
+     localStorage["paused"] = "false";
+     document.getElementById("toggle_pause").innerHTML = "Pause Timer";
+   }
+ }
+
+ function initialize() {
+   addFrame();
+
+   var link = document.getElementById("toggle_pause");
+   if (localStorage["paused"] == undefined || localStorage["paused"] == "false") {
+     localStorage["paused"] = "false";
+     link.innerHTML = "Pause Timer";
+   } else {
+     link.innerHTML = "Resume Timer";
+   }
  }
 
 
   </script>
-  <body onload="addFrame()">
+  <body onload="initialize()">
+
+    <div id="options">
+      <a href="javascript:void(0)" onclick="sendStats()">Send Stats</a>&nbsp;
+      <a id="toggle_pause" href="javascript:void(0)" onclick="togglePause()"></a>
+    </div>
+    <div id="stats"/>
+
   </body>
 </html>
