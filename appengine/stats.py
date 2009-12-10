@@ -82,7 +82,7 @@ class Update(webapp.RequestHandler):
     # Newer clients include a 'now' parameter. If it exists, use it, otherwise,
     # use the current UTC time.
     day = datetime.datetime.fromtimestamp(
-        self.request.get('now', time.time()))
+        float(self.request.get('now', time.time()))).date()
 
     updates = []
     for (site, seconds) in sites.iteritems():

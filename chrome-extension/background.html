@@ -67,7 +67,7 @@
       console.log("Sending statistics.");
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites) +
-                   "&now=" + escape(new Date().getTime());
+                   "&now=" + escape(new Date().getTime()/1000);
       xhr.open("POST", "http://browser-timetracker.appspot.com/stats/update", false);
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       try {
