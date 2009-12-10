@@ -9,6 +9,8 @@
     var sendStatsInterval = 1000 * 60 * 60;  // 60 minutes.
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
+    var trackerServer = "http://browser-timetracker.appspot.com";
+
     /**
      * Returns just the site/domain from the url. Includes the protocol.
      * chrome://extensions/some/other?blah=ffdf -> chrome://extensions
@@ -78,7 +80,7 @@
      function clearStatistics() {
        var xhr = new XMLHttpRequest();
        xhr.open(
-         "GET", "http://browser-timetracker.appspot.com/stats/clear", false);
+         "GET", trackerServer + "/stats/clear", false);
        xhr.send(null);
      }
 
@@ -94,7 +96,7 @@
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites) +
                    "&now=" + escape(new Date().getTime()/1000);
-      xhr.open("POST", "http://browser-timetracker.appspot.com/stats/update", false);
+      xhr.open("POST", trackerServer + "/stats/update", false);
       xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       try {
         xhr.send(params);
