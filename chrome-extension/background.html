@@ -134,6 +134,10 @@
         localStorage.sites = JSON.stringify({});
       }
 
+      if (localStorage["paused"] == "true") {
+        chrome.browserAction.setIcon({path: 'images/icon_paused.png'});
+      }
+
       /* Add some listeners for tab changing events. We want to update our
       *  counters when this sort of stuff happens. */
       chrome.tabs.onSelectionChanged.addListener(
