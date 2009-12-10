@@ -7,11 +7,23 @@ iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?no
                             escape(new Date().getTime()/1000));
 iframe.setAttribute("width", "400px");
 iframe.setAttribute("height", "400px");
+iframe.setAttribute("id", "stats_frame");
 document.getElementById("stats").appendChild(iframe);
  }
 
  function sendStats() {
    chrome.extension.sendRequest({action: "sendStats"}, function(response) {
+     /* Reload the iframe. */
+     var iframe = document.getElementById("stats_frame");
+     iframe.src = iframe.src;
+   });
+ }
+
+ function clearStats() {
+   chrome.extension.sendRequest({action: "clearStats"}, function(response) {
+     /* Reload the iframe. */
+     var iframe = document.getElementById("stats_frame");
+     iframe.src = iframe.src;
    });
  }
 
@@ -47,9 +59,9 @@ document.getElementById("stats").appendChild(iframe);
 
     <div id="options">
       <a href="javascript:void(0)" onclick="sendStats()">Send Stats</a>&nbsp;
-      <a id="toggle_pause" href="javascript:void(0)" onclick="togglePause()"></a>
+      <a id="toggle_pause" href="javascript:void(0)"onclick="togglePause()"></a>&nbsp;
+      <a href="javascript:void(0)" onclick="clearStats()">Clear *All* Stats</a>
     </div>
     <div id="stats"/>
-
   </body>
 </html>

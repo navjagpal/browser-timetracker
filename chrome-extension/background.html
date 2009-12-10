@@ -6,7 +6,7 @@
     var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
 
     // TODO(nav): Make sendStatsInterval a user preference.
-    var sendStatsInterval = 1000 * 60;  // 1 minute.
+    var sendStatsInterval = 1000 * 60 * 60;  // 60 minutes.
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
     /**
@@ -71,6 +71,16 @@
         });
       });
     }
+
+    /**
+     * Clears all statistics stored on server.
+     */
+     function clearStatistics() {
+       var xhr = new XMLHttpRequest();
+       xhr.open(
+         "GET", "http://browser-timetracker.appspot.com/stats/clear", false);
+       xhr.send(null);
+     }
 
     /**
      * Sends statistics to the server. If there are no problems in sending the
@@ -151,6 +161,10 @@
           if (request.action == "sendStats") {
             console.log("Sending statistics by request.");
             sendStatistics();
+            sendResponse({});
+          } else if (request.action == "clearStats") {
+            console.log("Clearing statistics by request.");
+            clearStatistics();
             sendResponse({});
           } else {
             console.log("Invalid action given.");
