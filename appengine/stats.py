@@ -15,6 +15,7 @@
 import datetime
 import logging
 import os
+import time
 
 from django.utils import simplejson
 from google.appengine.api import users
@@ -78,8 +79,12 @@ class Update(webapp.RequestHandler):
     user = users.get_current_user()
     sites = simplejson.loads(self.request.get('sites'))
 
+    # Newer clients include a 'now' parameter. If it exists, use it, otherwise,
+    # use the current UTC time.
+    day = datetime.datetime.fromtimestamp(
+        self.request.get('now', time.time()))
+
     updates = []
-    day = datetime.datetime.now().date()
     for (site, seconds) in sites.iteritems():
       site_time = SiteTime.gql('WHERE user = :1 AND site = :2 AND day = :3',
                                user, site, day).get()
