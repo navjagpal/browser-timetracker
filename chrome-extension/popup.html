@@ -1,5 +1,17 @@
 <html>
-  <body>
-    <iframe width=400px height=400px src="http://browser-timetracker.appspot.com/stats/view"></iframe>
+  <script>
+
+  function addFrame() {
+var iframe = document.createElement("iframe");
+iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?now=" +
+                            escape(new Date().getTime()/1000));
+iframe.setAttribute("width", "400px");
+iframe.setAttribute("height", "400px");
+document.body.appendChild(iframe);
+ }
+
+
+  </script>
+  <body onload="addFrame()">
   </body>
 </html>

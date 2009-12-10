@@ -44,10 +44,13 @@ class View(webapp.RequestHandler):
 
   def get(self):
     user = users.get_current_user()
+    # Newer clients provide the 'now' parameter to specify their current time.
+    day = datetime.datetime.fromtimestamp(
+        float(self.request.get('now', time.time()))).date()
+    
     site_times = SiteTime.gql('WHERE user = :1 AND day = :2 '
                               'ORDER BY seconds DESC',
-                              user,
-                              datetime.datetime.now().date())
+                              user, day)
 
     user_info = UserInfo.gql('WHERE user = :1', user).get()
     if user_info:
