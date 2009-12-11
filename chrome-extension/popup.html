@@ -58,13 +58,11 @@
    console.log("Value = " + localStorage["paused"]);
    if (localStorage["paused"] == "false") {
      console.log("Setting to Resume");
-     localStorage["paused"] = "true";
-     chrome.browserAction.setIcon({path: 'images/icon_paused.png'});
+     chrome.extension.sendRequest({action: "pause"}, function(response) {});
      document.getElementById("toggle_pause").innerHTML = "Resume Timer";
-     } else if (localStorage["paused"] == "true"){
+   } else if (localStorage["paused"] == "true"){
      console.log("Setting to Pause");
-     localStorage["paused"] = "false";
-     chrome.browserAction.setIcon({path: 'images/icon.png'});
+     chrome.extension.sendRequest({action: "resume"}, function(response) {});
      document.getElementById("toggle_pause").innerHTML = "Pause Timer";
    }
  }

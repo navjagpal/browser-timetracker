@@ -27,9 +27,20 @@
 
     function checkIdleTime() {
       lastActivitySeconds += 10;
-      if (lastActivitySeconds > 30) {
+      if (localStorage["paused"] == "false" && lastActivitySeconds > 30) {
         console.log("Idle for " + lastActivitySeconds + " seconds.");
+        pause();
       }
+    }
+
+    function pause() {
+      localStorage["paused"] = "true";
+      chrome.browserAction.setIcon({path: 'images/icon_paused.png'});
+    }
+
+    function resume() {
+      localStorage["paused"] = "false";
+      chrome.browserAction.setIcon({path: 'images/icon.png'});
     }
 
     /**
@@ -37,6 +48,9 @@
      */
     function resetActivity() {
       lastActivitySeconds = 0;
+      if (localStorage["paused"] == "true") {
+        resume();
+      }
     }
 
     /**
@@ -161,7 +175,7 @@
       }
 
       if (localStorage["paused"] == "true") {
-        chrome.browserAction.setIcon({path: 'images/icon_paused.png'});
+        pause();
       }
 
       /* Add some listeners for tab changing events. We want to update our
@@ -209,6 +223,10 @@
             console.log("Clearing statistics by request.");
             clearStatistics();
             sendResponse({});
+          } else if (request.action == "pause") {
+            pause();
+          } else if (request.action == "resume") {
+            resume();
           } else {
             console.log("Invalid action given.");
           }
