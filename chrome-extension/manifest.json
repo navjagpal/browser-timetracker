@@ -13,5 +13,11 @@
     "popup": "popup.html"
   },
   "icons": { "128": "images/icon.png" },
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["idle.js"]
+    }
+  ]
 }

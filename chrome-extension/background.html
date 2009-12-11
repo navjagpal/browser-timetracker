@@ -9,6 +9,8 @@
 
     var trackerServer = "http://browser-timetracker.appspot.com";
 
+    var lastActivitySeconds = 0;
+
     /**
      * Returns just the site/domain from the url. Includes the protocol.
      * chrome://extensions/some/other?blah=ffdf -> chrome://extensions
@@ -21,6 +23,20 @@
         return match[1];
       }
       return null;
+    }
+
+    function checkIdleTime() {
+      lastActivitySeconds += 10;
+      if (lastActivitySeconds > 30) {
+        console.log("Idle for " + lastActivitySeconds + " seconds.");
+      }
+    }
+
+    /**
+     * This should be called whenever activity by the user is detected.
+     */
+    function resetActivity() {
+      lastActivitySeconds = 0;
     }
 
     /**
@@ -153,6 +169,7 @@
       chrome.tabs.onSelectionChanged.addListener(
       function(tabId, selectionInfo) {
         console.log("Tab changed");
+        resetActivity();
         currentTabId = tabId;
         updateCounter();
       });
@@ -168,6 +185,7 @@
       chrome.windows.onFocusChanged.addListener(
       function(windowId) {
         console.log("Detected window focus changed.");
+        resetActivity();
         chrome.tabs.getSelected(windowId,
         function(tab) {
           console.log("Window/Tab changed");
@@ -196,6 +214,13 @@
           }
         });
 
+        chrome.extension.onConnect.addListener(function(port) {
+          console.assert(port.name == "idle");
+          port.onMessage.addListener(function(msg) {
+            resetActivity();
+          });
+        });
+
       /* Force an update of the counter every minute. Otherwise, the counter
          only updates for selection or URL changes. */
       window.setInterval(updateCounter, updateCounterInterval);
@@ -208,11 +233,12 @@
         localStorage["storageType"] = "appengine";
       }
 
-
-
       // Send statistics periodically.
       console.log("Sending stats interval " + localStorage["sendStatsInterval"]);
       window.setInterval(sendStatistics, localStorage["sendStatsInterval"]);
+
+      // Keep track of idle time.
+      window.setInterval(checkIdleTime, 10 * 1000);
     }
 
   </script>
