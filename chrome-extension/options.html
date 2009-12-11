@@ -6,7 +6,11 @@
     function saveOptions() {
       var select = document.getElementById("sendStatsInterval");
       var updateInterval = select.children[select.selectedIndex].value;
-      localStorage["sendStatsInterval"] = updateInterval;
+      localStorage["sendStatsInterval"] = updateInterval * 1000;
+
+      select = document.getElementById("storageType");
+      var storageType = select.children[select.selectedIndex].value;
+      localStorage["storageType"] = storageType;
 
       // Update status.
       var status = document.getElementById("status");
@@ -30,6 +34,19 @@
           break;
         }
       }
+
+      var storageType = localStorage["storageType"];
+      if (!storageType) {
+        return;
+      }
+      select = document.getElementById("storageType");
+      for (var i = 0; i < select.children.length; i++) {
+        var child = select[i];
+        if (child.value == storageType) {
+          child.selected = "true";
+          break;
+        }
+      }
     }
 
   </script>
@@ -40,6 +57,12 @@
       <option value="600">Every 15 minutes.</option>
       <option value="1800">Every 30 minutes.</option>
       <option value="3600">Every 60 minutes.</option>
+    </select><br/><br/>
+    Storage Type:
+    <select id="storageType">
+      <option value="local">Local Only</option>
+      <option value="spreadsheet">Google Spreadsheet</option>
+      <option value="appengine">AppEngine Server</option>
     </select>
 
     <br/>

@@ -11,6 +11,30 @@ iframe.setAttribute("id", "stats_frame");
 document.getElementById("stats").appendChild(iframe);
  }
 
+ function addLocalDisplay() {
+   var table = document.createElement("table");
+   var row = document.createElement("tr");
+   var cell = document.createElement("th");
+   cell.innerHTML = "Site";
+   row.appendChild(cell);
+   cell = document.createElement("th");
+   cell.innerHTML = "Minutes";
+   row.appendChild(cell);
+   table.appendChild(row);
+   var sites = JSON.parse(localStorage.sites);
+   for (site in sites) {
+     row = document.createElement("tr");
+     cell = document.createElement("td");
+     cell.innerHTML = site;
+     row.appendChild(cell);
+     cell = document.createElement("td");
+     cell.innerHTML = (sites[site] / 60).toFixed(2);
+     row.appendChild(cell);
+     table.appendChild(row);
+   }
+   document.getElementById("stats").appendChild(table);
+ }
+
  function sendStats() {
    chrome.extension.sendRequest({action: "sendStats"}, function(response) {
      /* Reload the iframe. */
@@ -44,7 +68,12 @@ document.getElementById("stats").appendChild(iframe);
  }
 
  function initialize() {
-   addFrame();
+
+   if (localStorage["storageType"] == "appengine") {
+     addFrame();
+   } else if (localStorage["storageType"] == "local") {
+     addLocalDisplay();
+   }
 
    var link = document.getElementById("toggle_pause");
    if (localStorage["paused"] == undefined || localStorage["paused"] == "false") {

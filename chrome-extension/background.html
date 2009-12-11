@@ -90,7 +90,17 @@
          console.log("Paused, not sending statistics.");
          return;
        }
-      console.log("Sending statistics.");
+
+       console.log("Sending statistics.");
+       if (localStorage["storageType"] == "appengine") {
+         console.log("Sending stats to server.");
+         sendStatisticsToServer();
+       } else {
+         console.log("Warning: Unsupported storage type.");
+       }
+     }
+
+     function sendStatisticsToServer() {
       var xhr = new XMLHttpRequest();
       var params = "sites=" + escape(localStorage.sites) +
                    "&now=" + escape(new Date().getTime()/1000);
@@ -191,10 +201,17 @@
       window.setInterval(updateCounter, updateCounterInterval);
 
       if (!localStorage["sendStatsInterval"]) {
-        localStorage["sendStatsInterval"] = 3600;
+        localStorage["sendStatsInterval"] = 3600 * 1000;
       }
 
+      if (!localStorage["storageType"]) {
+        localStorage["storageType"] = "appengine";
+      }
+
+
+
       // Send statistics periodically.
+      console.log("Sending stats interval " + localStorage["sendStatsInterval"]);
       window.setInterval(sendStatistics, localStorage["sendStatsInterval"]);
     }
 
