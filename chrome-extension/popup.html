@@ -1,14 +1,14 @@
 <html>
   <script>
 
-  function addFrame() {
-var iframe = document.createElement("iframe");
-iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?now=" +
-                            escape(new Date().getTime()/1000));
-iframe.setAttribute("width", "400px");
-iframe.setAttribute("height", "400px");
-iframe.setAttribute("id", "stats_frame");
-document.getElementById("stats").appendChild(iframe);
+ function addFrame() {
+   var iframe = document.createElement("iframe");
+   iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?now=" +
+                              escape(new Date().getTime()/1000));
+   iframe.setAttribute("width", "400px");
+   iframe.setAttribute("height", "400px");
+   iframe.setAttribute("id", "stats_frame");
+   document.getElementById("stats").appendChild(iframe);
  }
 
  function addLocalDisplay() {
@@ -22,6 +22,8 @@ document.getElementById("stats").appendChild(iframe);
    row.appendChild(cell);
    table.appendChild(row);
    var sites = JSON.parse(localStorage.sites);
+
+   /* TODO(nav): Make this sorted by time. */
    for (site in sites) {
      row = document.createElement("tr");
      cell = document.createElement("td");
