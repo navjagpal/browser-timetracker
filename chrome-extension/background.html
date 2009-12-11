@@ -5,8 +5,6 @@
     var startTime = null;
     var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
 
-    // TODO(nav): Make sendStatsInterval a user preference.
-    var sendStatsInterval = 1000 * 60 * 60;  // 60 minutes.
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
     var trackerServer = "http://browser-timetracker.appspot.com";
@@ -192,8 +190,12 @@
          only updates for selection or URL changes. */
       window.setInterval(updateCounter, updateCounterInterval);
 
+      if (!localStorage["sendStatsInterval"]) {
+        localStorage["sendStatsInterval"] = 3600;
+      }
+
       // Send statistics periodically.
-      window.setInterval(sendStatistics, sendStatsInterval);
+      window.setInterval(sendStatistics, localStorage["sendStatsInterval"]);
     }
 
   </script>

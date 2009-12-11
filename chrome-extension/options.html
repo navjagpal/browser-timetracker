@@ -1,0 +1,50 @@
+<html>
+  <head><title>Time Tracker Preferences</title></head>
+  <script type="text/javascript">
+
+    // Saves options to localStorage.
+    function saveOptions() {
+      var select = document.getElementById("sendStatsInterval");
+      var updateInterval = select.children[select.selectedIndex].value;
+      localStorage["sendStatsInterval"] = updateInterval;
+
+      // Update status.
+      var status = document.getElementById("status");
+      status.innerHTML = "Preferences Saved.";
+      setTimeout(function() {
+        status.innerHTML = "";
+      }, 750);
+    }
+
+    // Restores options from localStorage, if available.
+    function restoreOptions() {
+      var updateInterval = localStorage["sendStatsInterval"];
+      if (!updateInterval) {
+        return;
+      }
+      var select = document.getElementById("sendStatsInterval");
+      for (var i = 0; i < select.children.length; i++) {
+        var child = select[i];
+        if (child.value == updateInterval) {
+          child.selected = "true";
+          break;
+        }
+      }
+    }
+
+  </script>
+
+  <body onload="restoreOptions()">
+    Update Interval:
+    <select id="sendStatsInterval">
+      <option value="600">Every 15 minutes.</option>
+      <option value="1800">Every 30 minutes.</option>
+      <option value="3600">Every 60 minutes.</option>
+    </select>
+
+    <br/>
+    <button onclick="saveOptions()">Save</button>
+    <div id="status"></div>
+  </body>
+
+  </body>
