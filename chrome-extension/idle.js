@@ -1,13 +1,11 @@
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 /**
- * @fileoverview Description of this file.
- * @author nav@google.com (Nav Jagpal)
+ * @fileoverview Notifies background page of user activity.
+ * @author nav@gmail.com (Nav Jagpal)
  */
 
 var port = chrome.extension.connect({name: "idle"});
 
+/* Keep this simple because it happens on every mouse movement. */
 document.body.onmousemove = function() {
-  console.log("Mouse move detected.");
   port.postMessage({});
 }
