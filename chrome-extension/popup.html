@@ -32,8 +32,24 @@
    table.appendChild(row);
    var sites = JSON.parse(localStorage.sites);
 
-   /* TODO(nav): Make this sorted by time. */
+   /* Sort sites by time spent */
+   var sortedSites = new Array();
    for (site in sites) {
+     sortedSites.push([site, sites[site]]);
+   }
+   sortedSites.sort(function(a, b) {
+     return b[1] - a[1];
+   });
+
+   /* Show only the top 15 sites by default */
+   var max = 15;
+   if (document.location.href.indexOf("show=all") != -1) {
+     max = sortedSites.length;
+   }
+
+   for (var index = 0; ((index < sortedSites.length) && (index < max));
+        index++ ){
+     var site = sortedSites[index][0];
      row = document.createElement("tr");
      cell = document.createElement("td");
      cell.innerHTML = site;
@@ -44,6 +60,15 @@
      table.appendChild(row);
    }
    document.getElementById("stats").appendChild(table);
+
+   /* Add an option to show all stats */
+   var showAllLink = document.createElement("a");
+   showAllLink.onclick = function() {
+     chrome.tabs.create({url: "popup.html?show=all"});
+   }
+   showAllLink.setAttribute("href", "javascript:void(0)");
+   showAllLink.appendChild(document.createTextNode("Show All"));
+   document.getElementById("options").appendChild(showAllLink);
  }
 
  function sendStats() {
@@ -97,11 +122,10 @@
   </script>
 </head>
   <body onload="initialize()">
-
     <div id="options">
       <a href="javascript:void(0)" onclick="sendStats()">Send Stats</a>&nbsp;
       <a id="toggle_pause" href="javascript:void(0)"onclick="togglePause()"></a>&nbsp;
-      <a href="javascript:void(0)" onclick="clearStats()">Clear *All* Stats</a>
+      <a href="javascript:void(0)" onclick="clearStats()">Clear *All* Stats</a>&nbsp;
     </div>
     <div id="stats"/>
   </body>
