@@ -247,8 +247,9 @@
         localStorage["sendStatsInterval"] = 3600 * 1000;
       }
 
+      /* Default is to use local only storage. */
       if (!localStorage["storageType"]) {
-        localStorage["storageType"] = "appengine";
+        localStorage["storageType"] = "local";
       }
 
       // Send statistics periodically.
