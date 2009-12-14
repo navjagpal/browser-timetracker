@@ -106,10 +106,13 @@
      * Clears all statistics stored on server.
      */
      function clearStatistics() {
-       var xhr = new XMLHttpRequest();
-       xhr.open(
-         "GET", trackerServer + "/stats/clear", false);
-       xhr.send(null);
+       if (localStorage["storageType"] == "appengine") {
+         var xhr = new XMLHttpRequest();
+         xhr.open(
+           "GET", trackerServer + "/stats/clear", false);
+         xhr.send(null);
+       }
+       localStorage.sites = JSON.stringify({});
      }
 
     /**
