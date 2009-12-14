@@ -66,9 +66,13 @@
    showAllLink.onclick = function() {
      chrome.tabs.create({url: "popup.html?show=all"});
    }
-   showAllLink.setAttribute("href", "javascript:void(0)");
-   showAllLink.appendChild(document.createTextNode("Show All"));
-   document.getElementById("options").appendChild(showAllLink);
+
+   /* Show the "Show All" link if there are some sites we didn't show. */
+   if (max < sortedSites.length) {
+     showAllLink.setAttribute("href", "javascript:void(0)");
+     showAllLink.appendChild(document.createTextNode("Show All"));
+     document.getElementById("options").appendChild(showAllLink);
+   }
  }
 
  function sendStats() {
