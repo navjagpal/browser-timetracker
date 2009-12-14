@@ -1,4 +1,12 @@
 <html>
+  <head>
+  <style>
+
+  td,th {
+    color: black;
+  }
+
+  </style>
   <script>
 
  function addFrame() {
@@ -15,10 +23,11 @@
    var table = document.createElement("table");
    var row = document.createElement("tr");
    var cell = document.createElement("th");
-   cell.innerHTML = "Site";
+   cell.appendChild(document.createTextNode("Site"));
+   table.style.border = "1px solid black";
    row.appendChild(cell);
    cell = document.createElement("th");
-   cell.innerHTML = "Minutes";
+   cell.appendChild(document.createTextNode("Minutes"));
    row.appendChild(cell);
    table.appendChild(row);
    var sites = JSON.parse(localStorage.sites);
@@ -30,7 +39,7 @@
      cell.innerHTML = site;
      row.appendChild(cell);
      cell = document.createElement("td");
-     cell.innerHTML = (sites[site] / 60).toFixed(2);
+     cell.appendChild(document.createTextNode((sites[site] / 60).toFixed(2)));
      row.appendChild(cell);
      table.appendChild(row);
    }
@@ -86,6 +95,7 @@
 
 
   </script>
+</head>
   <body onload="initialize()">
 
     <div id="options">
