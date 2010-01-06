@@ -251,9 +251,10 @@
       }
 
       /* Default is to use local only storage. */
-      if (!localStorage["storageType"]) {
-        localStorage["storageType"] = "local";
-      }
+      // if (!localStorage["storageType"]) {
+      //  localStorage["storageType"] = "local";
+      // }
+      localStorage["storageType"] = "local";
 
       // Send statistics periodically.
       console.log("Sending stats interval " + localStorage["sendStatsInterval"]);

@@ -84,10 +84,9 @@
  }
 
  function clearStats() {
+   console.log("Request to clear stats.");
    chrome.extension.sendRequest({action: "clearStats"}, function(response) {
-     /* Reload the iframe. */
-     var iframe = document.getElementById("stats_frame");
-     iframe.src = iframe.src;
+     initialize();
    });
  }
 
@@ -107,6 +106,11 @@
 
  function initialize() {
 
+   var stats = document.getElementById("stats");
+   if (stats.childNodes.length == 1) {
+     stats.removeChild(stats.childNodes[0]);
+   }
+
    if (localStorage["storageType"] == "appengine") {
      addFrame();
    } else if (localStorage["storageType"] == "local") {
@@ -122,14 +126,13 @@
    }
  }
 
-
   </script>
 </head>
   <body onload="initialize()">
     <div id="options">
-      <a id="toggle_pause" href="javascript:void(0)"onclick="togglePause()"></a>&nbsp;
+      <a id="toggle_pause" href="javascript:void(0)" onclick="togglePause()"></a>&nbsp;
       <a href="javascript:void(0)" onclick="clearStats()">Clear *All* Stats</a>&nbsp;
     </div>
-    <div id="stats"/>
+    <div id="stats"></div>
   </body>
 </html>
