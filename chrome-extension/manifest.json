@@ -4,7 +4,6 @@
   "description": "Keeps track of how much time you spend on various web sites.",
   "background_page": "background.html",
   "permissions": [
-    "http://browser-timetracker.appspot.com/stats/update",
     "tabs"
   ],
   "browser_action": {
@@ -13,7 +12,6 @@
     "popup": "popup.html"
   },
   "icons": { "128": "images/icon.png" },
-  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": ["http://*/*"],
