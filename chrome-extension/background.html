@@ -27,7 +27,7 @@
 
     function checkIdleTime() {
       lastActivitySeconds += 10;
-      if (localStorage["paused"] == "false" && lastActivitySeconds > 30) {
+      if (localStorage["paused"] == "false" && lastActivitySeconds > 60) {
         console.log("Idle for " + lastActivitySeconds + " seconds.");
         pause();
       }
