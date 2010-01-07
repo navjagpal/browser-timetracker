@@ -34,8 +34,10 @@
 
    /* Sort sites by time spent */
    var sortedSites = new Array();
+   var totalTime = 0;
    for (site in sites) {
      sortedSites.push([site, sites[site]]);
+     totalTime += sites[site];
    }
    sortedSites.sort(function(a, b) {
      return b[1] - a[1];
@@ -46,6 +48,16 @@
    if (document.location.href.indexOf("show=all") != -1) {
      max = sortedSites.length;
    }
+
+   /* Add total row. */
+   row = document.createElement("tr");
+   cell = document.createElement("td");
+   cell.innerHTML = "<b>Total</b>";
+   row.appendChild(cell);
+   cell = document.createElement("td");
+   cell.appendChild(document.createTextNode((totalTime / 60).toFixed(2)));
+   row.appendChild(cell);
+   table.appendChild(row);
 
    for (var index = 0; ((index < sortedSites.length) && (index < max));
         index++ ){
