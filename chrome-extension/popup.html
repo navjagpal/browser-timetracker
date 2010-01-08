@@ -29,6 +29,9 @@
    cell = document.createElement("th");
    cell.appendChild(document.createTextNode("Minutes"));
    row.appendChild(cell);
+   cell = document.createElement("th");
+   cell.appendChild(document.createTextNode("Percent"));
+   row.appendChild(cell);
    table.appendChild(row);
    var sites = JSON.parse(localStorage.sites);
 
@@ -57,6 +60,9 @@
    cell = document.createElement("td");
    cell.appendChild(document.createTextNode((totalTime / 60).toFixed(2)));
    row.appendChild(cell);
+   cell = document.createElement("td");
+   cell.appendChild(document.createTextNode(("100")));
+   row.appendChild(cell);
    table.appendChild(row);
 
    for (var index = 0; ((index < sortedSites.length) && (index < max));
@@ -68,6 +74,10 @@
      row.appendChild(cell);
      cell = document.createElement("td");
      cell.appendChild(document.createTextNode((sites[site] / 60).toFixed(2)));
+     row.appendChild(cell);
+     cell = document.createElement("td");
+     cell.appendChild(document.createTextNode(
+       (sites[site] / totalTime * 100).toFixed(2)));
      row.appendChild(cell);
      table.appendChild(row);
    }
