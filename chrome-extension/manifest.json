@@ -1,6 +1,6 @@
 {
   "name": "Time Tracker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Keeps track of how much time you spend on various web sites.",
   "background_page": "background.html",
   "permissions": [
