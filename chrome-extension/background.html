@@ -26,10 +26,17 @@
     }
 
     function checkIdleTime() {
+      console.log("Checking idle time.");
       lastActivitySeconds += 10;
+      console.log("Last activity was " + lastActivitySeconds + " seconds ago.");
+      console.log("Paused = " + localStorage["paused"]);
       if (localStorage["paused"] == "false" && lastActivitySeconds > 60) {
         console.log("Idle for " + lastActivitySeconds + " seconds.");
-        pause();
+        if (localStorage["idleDetection"] == "false") {
+          console.log("Idle detection disabled, not pausing timer.");
+        } else {
+          pause();
+        }
       }
     }
 
@@ -177,8 +184,17 @@
         localStorage.sites = JSON.stringify({});
       }
 
+      if (!localStorage.paused) {
+        localStorage.paused = "false";
+      }
+
       if (localStorage["paused"] == "true") {
         pause();
+      }
+
+      // Default is to do idle detection.
+      if (!localStorage.idleDetection) {
+        localStorage.idleDetection = "true";
       }
 
       /* Add some listeners for tab changing events. We want to update our

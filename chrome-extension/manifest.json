@@ -11,6 +11,7 @@
     "default_title": "Time Tracker",
     "popup": "popup.html"
   },
+  "options_page": "options.html",
   "icons": { "128": "images/icon.png" },
   "content_scripts": [
     {

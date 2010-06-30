@@ -4,13 +4,12 @@
 
     // Saves options to localStorage.
     function saveOptions() {
-      var select = document.getElementById("sendStatsInterval");
-      var updateInterval = select.children[select.selectedIndex].value;
-      localStorage["sendStatsInterval"] = updateInterval * 1000;
-
-      select = document.getElementById("storageType");
-      var storageType = select.children[select.selectedIndex].value;
-      localStorage["storageType"] = storageType;
+      var idleCheck = document.getElementById("idle_check");
+      if (idleCheck.checked) {
+        localStorage["idleDetection"] = "true";
+      } else {
+        localStorage["idleDetection"] = "false";
+      }
 
       // Update status.
       var status = document.getElementById("status");
@@ -22,48 +21,22 @@
 
     // Restores options from localStorage, if available.
     function restoreOptions() {
-      var updateInterval = localStorage["sendStatsInterval"];
-      if (!updateInterval) {
-        return;
-      }
-      var select = document.getElementById("sendStatsInterval");
-      for (var i = 0; i < select.children.length; i++) {
-        var child = select[i];
-        if (child.value == updateInterval) {
-          child.selected = "true";
-          break;
-        }
-      }
-
-      var storageType = localStorage["storageType"];
-      if (!storageType) {
-        return;
-      }
-      select = document.getElementById("storageType");
-      for (var i = 0; i < select.children.length; i++) {
-        var child = select[i];
-        if (child.value == storageType) {
-          child.selected = "true";
-          break;
-        }
+      var idleCheck = document.getElementById("idle_check");
+      var idleDetection = localStorage["idleDetection"];
+      if (!idleDetection || idleDetection == "false") {
+        idle_check.checked = false;
+      } else {
+        idle_check.checked = true;
       }
     }
 
   </script>
 
   <body onload="restoreOptions()">
-    Update Interval:
-    <select id="sendStatsInterval">
-      <option value="600">Every 15 minutes.</option>
-      <option value="1800">Every 30 minutes.</option>
-      <option value="3600">Every 60 minutes.</option>
-    </select><br/><br/>
-    Storage Type:
-    <select id="storageType">
-      <option value="local">Local Only</option>
-      <option value="appengine">AppEngine Server</option>
-    </select>
-
+    <input type="checkbox" id="idle_check"><b>Idle Detection</b>: When enabled, time
+    tracker attempts to detect if you are actively using the browser or not and
+    will pause and resume automatically. If disabled, you must pause and resume
+    the timer yourself.
     <br/>
     <button onclick="saveOptions()">Save</button>
     <div id="status"></div>
