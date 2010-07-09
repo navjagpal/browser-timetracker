@@ -3,7 +3,7 @@
     var currentSite = null;
     var currentTabId = null;
     var startTime = null;
-    var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
+    var siteRegexp = /^(\w+:\/\/)([^\/]+).*$/;
 
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
@@ -20,7 +20,20 @@
     function getSiteFromUrl(url) {
       var match = url.match(siteRegexp);
       if (match) {
-        return match[1];
+        /* Check the ignored list. */
+        var ignoredSites = localStorage["ignoredSites"];
+        if (!ignoredSites) {
+          ignoredSites = [];
+        } else {
+          ignoredSites = JSON.parse(ignoredSites);
+        }
+        for (i in ignoredSites) {
+          if (ignoredSites[i] == match[2]) {
+            console.log("Site is on ignore list: " + match[2]);
+            return null;
+          }
+        }
+        return match[1] + match[2];
       }
       return null;
     }

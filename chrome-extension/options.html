@@ -19,6 +19,37 @@
       }, 750);
     }
 
+    function addIgnoredSite() {
+      var newSite = document.getElementById("new_ignored_site").value;
+      if (newSite.indexOf("http://") == 0 ||
+          newSite.indexOf("https://") == 0) {
+        alert("Do not include http or https prefix.");
+        return;
+      }
+      var ignoredSites = localStorage["ignoredSites"];
+      if (!ignoredSites) {
+        ignoredSites = [];
+      } else {
+        ignoredSites = JSON.parse(ignoredSites);
+      }
+      ignoredSites.push(newSite);
+      localStorage['ignoredSites'] = JSON.stringify(ignoredSites);
+      restoreOptions();
+    }
+
+    function removeIgnoredSites() {
+      var select = document.getElementById("ignored_sites");
+      var ignoredSites = [];
+      for (var i = 0; i < select.children.length; i++) {
+        var child = select.children[i];
+        if (child.selected == false) {
+          ignoredSites.push(child.value);
+        }
+      }
+      localStorage['ignoredSites'] = JSON.stringify(ignoredSites);
+      restoreOptions();
+    }
+
     // Restores options from localStorage, if available.
     function restoreOptions() {
       var idleCheck = document.getElementById("idle_check");
@@ -27,6 +58,20 @@
         idle_check.checked = false;
       } else {
         idle_check.checked = true;
+      }
+
+      var ignoredSites = localStorage['ignoredSites'];
+      if (!ignoredSites) {
+        return;
+      }
+      ignoredSites = JSON.parse(ignoredSites);
+      var select = document.getElementById("ignored_sites");
+      select.options.length = 0;
+      for (var i in ignoredSites) {
+        var option = document.createElement("option");
+        option.text = ignoredSites[i];
+        option.value = ignoredSites[i];
+        select.appendChild(option);
       }
     }
 
@@ -37,6 +82,13 @@
     tracker attempts to detect if you are actively using the browser or not and
     will pause and resume automatically. If disabled, you must pause and resume
     the timer yourself.
+    <br/>
+    <b>Manage Ignored Sites</b>: <br/>
+    <input type="text" id="new_ignored_site"></input>
+    <button onclick="addIgnoredSite()">Add</button><br/>
+    <select id="ignored_sites" MULTIPLE size="10">
+    </select><br/>
+    <button onclick="removeIgnoredSites()">Remove Selected</button>
     <br/>
     <button onclick="saveOptions()">Save</button>
     <div id="status"></div>
