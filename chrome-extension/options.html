@@ -2,39 +2,28 @@
   <head><title>Time Tracker Preferences</title></head>
   <script type="text/javascript">
 
-    // Saves options to localStorage.
-    function saveOptions() {
+    function saveIdle() {
       var idleCheck = document.getElementById("idle_check");
       if (idleCheck.checked) {
         localStorage["idleDetection"] = "true";
       } else {
         localStorage["idleDetection"] = "false";
       }
-
-      // Update status.
-      var status = document.getElementById("status");
-      status.innerHTML = "Preferences Saved.";
-      setTimeout(function() {
-        status.innerHTML = "";
-      }, 750);
     }
 
     function addIgnoredSite() {
       var newSite = document.getElementById("new_ignored_site").value;
-      if (newSite.indexOf("http://") == 0 ||
-          newSite.indexOf("https://") == 0) {
-        alert("Do not include http or https prefix.");
+      if (newSite.indexOf("http://") != 0 &&
+          newSite.indexOf("https://") != 0) {
+        alert("Include http:// or https:// prefix.");
         return;
       }
-      var ignoredSites = localStorage["ignoredSites"];
-      if (!ignoredSites) {
-        ignoredSites = [];
-      } else {
-        ignoredSites = JSON.parse(ignoredSites);
-      }
-      ignoredSites.push(newSite);
-      localStorage['ignoredSites'] = JSON.stringify(ignoredSites);
-      restoreOptions();
+
+      chrome.extension.sendRequest(
+         {action: "addIgnoredSite", site: newSite},
+         function(response) {
+           restoreOptions();
+         });
     }
 
     function removeIgnoredSites() {
@@ -78,7 +67,7 @@
   </script>
 
   <body onload="restoreOptions()">
-    <input type="checkbox" id="idle_check"><b>Idle Detection</b>: When enabled, time
+    <input type="checkbox" id="idle_check" onclick="saveIdle()"><b>Idle Detection</b>: When enabled, time
     tracker attempts to detect if you are actively using the browser or not and
     will pause and resume automatically. If disabled, you must pause and resume
     the timer yourself.
@@ -90,8 +79,6 @@
     </select><br/>
     <button onclick="removeIgnoredSites()">Remove Selected</button>
     <br/>
-    <button onclick="saveOptions()">Save</button>
-    <div id="status"></div>
   </body>
 
   </body>

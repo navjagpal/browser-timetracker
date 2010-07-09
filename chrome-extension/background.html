@@ -3,7 +3,7 @@
     var currentSite = null;
     var currentTabId = null;
     var startTime = null;
-    var siteRegexp = /^(\w+:\/\/)([^\/]+).*$/;
+    var siteRegexp = /^(\w+:\/\/[^\/]+).*$/;
 
     var updateCounterInterval = 1000 * 60;  // 1 minute.
 
@@ -28,12 +28,12 @@
           ignoredSites = JSON.parse(ignoredSites);
         }
         for (i in ignoredSites) {
-          if (ignoredSites[i] == match[2]) {
-            console.log("Site is on ignore list: " + match[2]);
+          if (ignoredSites[i] == match[1]) {
+            console.log("Site is on ignore list: " + match[1]);
             return null;
           }
         }
-        return match[1] + match[2];
+        return match[1];
       }
       return null;
     }
@@ -134,6 +134,29 @@
        }
        localStorage.sites = JSON.stringify({});
      }
+
+     /**
+      * Adds a site to the ignored list.
+      */
+      function addIgnoredSite(site) {
+        console.log("Removing " + site);
+        site = getSiteFromUrl(site);
+        if (!site) {
+          return;
+        }
+        var ignoredSites = localStorage.ignoredSites;
+        if (!ignoredSites) {
+          ignoredSites = [];
+        } else {
+          ignoredSites = JSON.parse(ignoredSites);
+        }
+        ignoredSites.push(site);
+        localStorage.ignoredSites = JSON.stringify(ignoredSites);
+
+        var sites = JSON.parse(localStorage.sites);
+        delete sites[site];
+        localStorage.sites = JSON.stringify(sites);
+      }
 
     /**
      * Sends statistics to the server. If there are no problems in sending the
@@ -254,6 +277,9 @@
           } else if (request.action == "clearStats") {
             console.log("Clearing statistics by request.");
             clearStatistics();
+            sendResponse({});
+          } else if (request.action == "addIgnoredSite") {
+            addIgnoredSite(request.site);
             sendResponse({});
           } else if (request.action == "pause") {
             pause();
