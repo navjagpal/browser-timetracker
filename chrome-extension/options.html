@@ -11,6 +11,16 @@
       }
     }
 
+    function updateClearStatsInterval() {
+      var select = document.getElementById("clear_stats_interval");
+      var option = select.options[select.selectedIndex];
+      localStorage["clearStatsInterval"] = option.value;
+      if (localStorage["nextTimeToClear"]) {
+        delete localStorage["nextTimeToClear"];
+      }
+      restoreOptions();
+    }
+
     function addIgnoredSite() {
       var newSite = document.getElementById("new_ignored_site").value;
       if (newSite.indexOf("http://") != 0 &&
@@ -62,6 +72,19 @@
         option.value = ignoredSites[i];
         select.appendChild(option);
       }
+
+      var clearStatsInterval = localStorage['clearStatsInterval'];
+      if (!clearStatsInterval) {
+        clearStatsInterval = "0";
+      }
+      select = document.getElementById("clear_stats_interval");
+      for (var i = 0; i < select.options.length; i++) {
+        var option = select.options[i];
+        if (option.value == clearStatsInterval) {
+          option.selected = true;
+          break;
+        }
+      }
     }
 
   </script>
@@ -79,6 +102,12 @@
     </select><br/>
     <button onclick="removeIgnoredSites()">Remove Selected</button>
     <br/>
+    <b>Clear Statistics Every:</b>:
+    <select id="clear_stats_interval" onchange="updateClearStatsInterval()">
+      <option value="0">never</option>
+      <option value="3600">Hour</option>
+      <option value="86400">Day</option>
+    </select>
   </body>
 
   </body>

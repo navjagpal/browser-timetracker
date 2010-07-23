@@ -73,6 +73,46 @@
       }
     }
 
+    function periodicClearStats() {
+      console.log("Checking to see if we should clear stats.");
+      var clearStatsInterval = localStorage["clearStatsInterval"];
+      if (!clearStatsInterval) {
+        clearStatsInterval = "0";
+        localStorage["clearStatsInterval"] = "0";
+      }
+      clearStatsInterval = parseInt(clearStatsInterval, 10);
+      console.log("Clear interval of " + clearStatsInterval);
+      if (clearStatsInterval < 3600) {
+        console.log("Invalid interval period, minimum is 3600.");
+        delete localStorage["nextTimeToClear"]; 
+        return;
+      }
+      
+      var nextTimeToClear = localStorage["nextTimeToClear"];
+      if (!nextTimeToClear) {
+        var d = new Date();
+        d.setTime(d.getTime() + clearStatsInterval * 1000);
+        d.setMinutes(0);
+        d.setSeconds(0);
+        if (clearStatsInterval == 86400) {
+          d.setHours(0);
+        }
+        console.log("Next time to clear is " + d.toString());
+        nextTimeToClear = d.getTime();
+        localStorage["nextTimeToClear"] = "" + nextTimeToClear;
+      }
+      nextTimeToClear = parseInt(nextTimeToClear, 10);
+      var now = new Date();
+      if (now.getTime() > nextTimeToClear) {
+        console.log("Yes, time to clear stats.");
+        clearStatistics();
+        nextTimeToClear = new Date(nextTimeToClear + clearStatsInterval * 1000);
+        console.log("Next time to clear is " + nextTimeToClear.toString());
+        localStorage["nextTimeToClear"] = "" + nextTimeToClear.getTime();
+        return;
+      }
+    }
+
     /**
      * Updates the counter for the current tab.
      */
@@ -300,6 +340,9 @@
       /* Force an update of the counter every minute. Otherwise, the counter
          only updates for selection or URL changes. */
       window.setInterval(updateCounter, updateCounterInterval);
+
+      /* Periodically check to see if we should be clearing stats. */
+      window.setInterval(periodicClearStats, 60 * 1000);
 
       if (!localStorage["sendStatsInterval"]) {
         localStorage["sendStatsInterval"] = 3600 * 1000;

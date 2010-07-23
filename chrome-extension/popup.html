@@ -163,6 +163,14 @@
    } else {
      link.innerHTML = "Resume Timer";
    }
+
+   var nextClearStats = localStorage["nextTimeToClear"];
+   if (nextClearStats) {
+     nextClearStats = parseInt(nextClearStats, 10);
+     nextClearStats = new Date(nextClearStats);
+     document.getElementById("nextClear").appendChild(
+       document.createTextNode("Next Reset: " + nextClearStats.toString()));
+   }
  }
 
   </script>
@@ -171,6 +179,8 @@
     <div id="options">
       <a id="toggle_pause" href="javascript:void(0)" onclick="togglePause()"></a>&nbsp;
       <a href="javascript:void(0)" onclick="clearStats()">Clear *All* Stats</a>&nbsp;
+    </div>
+    <div id="nextClear">
     </div>
     <div id="stats"></div>
   </body>
