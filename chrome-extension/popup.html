@@ -168,7 +168,11 @@
    if (nextClearStats) {
      nextClearStats = parseInt(nextClearStats, 10);
      nextClearStats = new Date(nextClearStats);
-     document.getElementById("nextClear").appendChild(
+     var nextClearDiv = document.getElementById("nextClear");
+     if (nextClearDiv.childNodes.length == 1) {
+       nextClearDiv.removeChild(nextClear.childNodes[0]);
+     }
+     nextClearDiv.appendChild(
        document.createTextNode("Next Reset: " + nextClearStats.toString()));
    }
  }
