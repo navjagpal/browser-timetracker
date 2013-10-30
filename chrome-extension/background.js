@@ -7,8 +7,6 @@ var updateCounterInterval = 1000 * 60;  // 1 minute.
 
 var trackerServer = "http://browser-timetracker.appspot.com";
 
-var lastActivitySeconds = 0;
-
 /**
  * Returns just the site/domain from the url. Includes the protocol.
  * chrome://extensions/some/other?blah=ffdf -> chrome://extensions
@@ -36,39 +34,26 @@ function getSiteFromUrl(url) {
   return null;
 }
 
-function checkIdleTime() {
-  console.log("Checking idle time.");
-  lastActivitySeconds += 10;
-  console.log("Last activity was " + lastActivitySeconds + " seconds ago.");
-  console.log("Paused = " + localStorage["paused"]);
-  if (localStorage["paused"] == "false" && lastActivitySeconds > 60) {
-    console.log("Idle for " + lastActivitySeconds + " seconds.");
-    if (localStorage["idleDetection"] == "false") {
-      console.log("Idle detection disabled, not pausing timer.");
-    } else {
-      pause();
-    }
+function checkIdleTime(newState) {
+  console.log("Checking idle behavior " + newState);
+  if ((newState == "idle" || newState == "locked") &&
+      localStorage["paused"] == "false") {
+    pause();
+  } else if (newState == "active") {
+    resume();
   }
 }
 
 function pause() {
+  console.log("Pausing timers.");
   localStorage["paused"] = "true";
   chrome.browserAction.setIcon({path: 'images/icon_paused.png'});
 }
 
 function resume() {
+  console.log("Resuming timers.");
   localStorage["paused"] = "false";
   chrome.browserAction.setIcon({path: 'images/icon.png'});
-}
-
-/**
- * This should be called whenever activity by the user is detected.
- */
-function resetActivity() {
-  lastActivitySeconds = 0;
-  if (localStorage["paused"] == "true") {
-    resume();
-  }
 }
 
 function periodicClearStats() {
@@ -150,7 +135,14 @@ function updateCounter() {
        * the last time we were ran. */
       var now = new Date();
       var delta = now.getTime() - startTime.getTime();
-      updateTime(currentSite, delta/1000);
+      // If the delta is too large, it's because something caused the update interval
+      // to take too long. This could be because of browser shutdown, for example.
+      // Ignore the delta if it is too large.
+      if (delta < (updateCounterInterval + updateCounterInterval / 2)) {
+        updateTime(currentSite, delta/1000);
+      } else {
+        console.log("Delta of " + delta/1000 + " seconds too long; ignored.");
+      }
 
       /* This function could have been called as the result of a tab change,
        * which means the site may have changed. */
@@ -276,7 +268,6 @@ function initialize() {
   chrome.tabs.onSelectionChanged.addListener(
   function(tabId, selectionInfo) {
     console.log("Tab changed");
-    resetActivity();
     currentTabId = tabId;
     updateCounter();
   });
@@ -292,7 +283,6 @@ function initialize() {
   chrome.windows.onFocusChanged.addListener(
   function(windowId) {
     console.log("Detected window focus changed.");
-    resetActivity();
     chrome.tabs.getSelected(windowId,
     function(tab) {
       console.log("Window/Tab changed");
@@ -328,13 +318,6 @@ function initialize() {
       }
     });
 
-    chrome.extension.onConnect.addListener(function(port) {
-      console.assert(port.name == "idle");
-      port.onMessage.addListener(function(msg) {
-        resetActivity();
-      });
-    });
-
   /* Force an update of the counter every minute. Otherwise, the counter
      only updates for selection or URL changes. */
   window.setInterval(updateCounter, updateCounterInterval);
@@ -357,7 +340,8 @@ function initialize() {
   window.setInterval(sendStatistics, localStorage["sendStatsInterval"]);
 
   // Keep track of idle time.
-  window.setInterval(checkIdleTime, 10 * 1000);
+  chrome.idle.queryState(60, checkIdleTime);
+  chrome.idle.onStateChanged.addListener(checkIdleTime);
 }
 
 initialize();

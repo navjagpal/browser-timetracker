@@ -19,22 +19,12 @@ function addIgnoredSite(new_site) {
 }
 
 function addLocalDisplay() {
-  var table = document.createElement("table");
-  var row = document.createElement("tr");
-  var cell = document.createElement("th");
-  cell.appendChild(document.createTextNode("Site"));
-  table.style.border = "1px solid black";
-  row.appendChild(cell);
-  cell = document.createElement("th");
-  cell.appendChild(document.createTextNode("Minutes"));
-  row.appendChild(cell);
-  cell = document.createElement("th");
-  cell.appendChild(document.createTextNode("Percent"));
-  row.appendChild(cell);
-  table.appendChild(row);
-  var sites = JSON.parse(localStorage.sites);
+  var table = document.getElementById("stats");
+  var tbody = document.createElement("tbody");
+  table.appendChild(tbody);
 
   /* Sort sites by time spent */
+  var sites = JSON.parse(localStorage.sites);
   var sortedSites = new Array();
   var totalTime = 0;
   for (site in sites) {
@@ -52,8 +42,8 @@ function addLocalDisplay() {
   }
 
   /* Add total row. */
-  row = document.createElement("tr");
-  cell = document.createElement("td");
+  var row = document.createElement("tr");
+  var cell = document.createElement("td");
   cell.innerHTML = "<b>Total</b>";
   row.appendChild(cell);
   cell = document.createElement("td");
@@ -62,7 +52,7 @@ function addLocalDisplay() {
   cell = document.createElement("td");
   cell.appendChild(document.createTextNode(("100")));
   row.appendChild(cell);
-  table.appendChild(row);
+  tbody.appendChild(row);
 
   for (var index = 0; ((index < sortedSites.length) && (index < max));
       index++ ){
@@ -85,9 +75,8 @@ function addLocalDisplay() {
    cell.appendChild(document.createTextNode(
      (sites[site] / totalTime * 100).toFixed(2)));
    row.appendChild(cell);
-   table.appendChild(row);
+   tbody.appendChild(row);
   }
-  document.getElementById("stats").appendChild(table);
 
   /* Add an option to show all stats */
   var showAllLink = document.createElement("a");

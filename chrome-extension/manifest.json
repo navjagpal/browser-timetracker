@@ -1,12 +1,13 @@
 {
   "name": "Time Tracker",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Keeps track of how much time you spend on various web sites.",
   "manifest_version": 2,
   "background": {
     "scripts": ["background.js"]
   },
   "permissions": [
+    "idle",
     "tabs"
   ],
   "browser_action": {
@@ -15,11 +16,5 @@
     "default_popup": "popup.html"
   },
   "options_page": "options.html",
-  "icons": { "128": "images/icon.png" },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*"],
-      "js": ["idle.js"]
-    }
-  ]
+  "icons": { "128": "images/icon.png" }
 }
