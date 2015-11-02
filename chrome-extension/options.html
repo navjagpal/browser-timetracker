@@ -2,15 +2,6 @@
   <head><title>Time Tracker Preferences</title></head>
   <script type="text/javascript">
 
-    function saveIdle() {
-      var idleCheck = document.getElementById("idle_check");
-      if (idleCheck.checked) {
-        localStorage["idleDetection"] = "true";
-      } else {
-        localStorage["idleDetection"] = "false";
-      }
-    }
-
     function updateClearStatsInterval() {
       var select = document.getElementById("clear_stats_interval");
       var option = select.options[select.selectedIndex];
@@ -51,14 +42,6 @@
 
     // Restores options from localStorage, if available.
     function restoreOptions() {
-      var idleCheck = document.getElementById("idle_check");
-      var idleDetection = localStorage["idleDetection"];
-      if (!idleDetection || idleDetection == "false") {
-        idle_check.checked = false;
-      } else {
-        idle_check.checked = true;
-      }
-
       var ignoredSites = localStorage['ignoredSites'];
       if (!ignoredSites) {
         return;
@@ -90,11 +73,6 @@
   </script>
 
   <body onload="restoreOptions()">
-    <input type="checkbox" id="idle_check" onclick="saveIdle()"><b>Idle Detection</b>: When enabled, time
-    tracker attempts to detect if you are actively using the browser or not and
-    will pause and resume automatically. If disabled, you must pause and resume
-    the timer yourself.
-    <br/>
     <b>Manage Ignored Sites</b>: <br/>
     <input type="text" id="new_ignored_site"></input>
     <button onclick="addIgnoredSite()">Add</button><br/>

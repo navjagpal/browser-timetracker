@@ -6,13 +6,13 @@ function Config() {
   }
 }
 
-Config.prototype.addIgnoredSite = function(var site) {
+Config.prototype.addIgnoredSite = function(site) {
   var sites = JSON.parse(localStorage.ignoredSites);
   sites.push(s);
   localStorage.ignoredSites = JSON.stringify(sites);
 };
 
-Config.prototype.isIgnoredSite = function(var site) {
+Config.prototype.isIgnoredSite = function(site) {
   var sites = JSON.parse(localStorage.ignoredSites);
   for (i in sites) {
     if (sites[i] == site) {
@@ -27,21 +27,38 @@ Object.defineProperty(Config.prototype, "paused", {
     if (!localStorage.paused) {
       localStorage.paused = "false";
     }
-    return localStorage.paused;
+    return localStorage.paused == "true";
   },
   set: function(v) {
-    localStorage.paused = y;
+    if (v == false) {
+      localStorage.paused = "false";
+    } else if (v == true) {
+      localStorage.paused = "true";
+    }
   }
 });
 
-Object.defineProperty(Config.prototype, "idleDetection", {
+Object.defineProperty(Config.prototype, "clearStatsInterval", {
   get: function() {
-    if (!localStorage.idleDetection) {
-      localStorage.idleDetection = "true";
+    if (!localStorage.clearStatsInterval) {
+      localStorage.clearStatsInterval = "0";
     }
-    return localStorage.idleDetection;
+    return parseInt(localStorage.clearStatsInterval, 10);
   },
-  set: function(v) {
-    localStorage.idleDetection = y;
+  set: function(i) {
+    localStorage.clearStatsInterval = i.toString();
   }
 });
+
+Object.defineProperty(Config.prototype, "nextTimeToClear", {
+  get: function() {
+    if (!localStorage.nextTimeToClear) {
+      localStorage.nextTimeToClear = "0";
+    }
+    return parseInt(localStorage.nextTimeToClear, 10);
+  },
+  set: function(i) {
+    localStorage.nextTimeToClear = i.toString();
+  }
+});
+
