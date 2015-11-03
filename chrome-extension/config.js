@@ -62,3 +62,8 @@ Object.defineProperty(Config.prototype, "nextTimeToClear", {
   }
 });
 
+Object.defineProperty(Config.prototype, "updateTimePeriodMinutes", {
+  get: function() {
+    return 1;
+  }
+});

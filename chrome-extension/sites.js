@@ -1,4 +1,5 @@
-function Sites() {
+function Sites(config) {
+  this._config = config;
   if (!localStorage.sites) {
     localStorage.sites = JSON.stringify({});
   }
@@ -28,7 +29,10 @@ Sites.prototype._updateTime = function() {
   }
   var delta = new Date() - this._startTime;
   console.log("Site: " + this._currentSite + " Delta = " + delta/1000);
-  // TODO(nav): Deal with large deltas, which are sign of trouble.
+  if (delta/1000/60 > 2*this._config.updateTimePeriodMinutes) {
+    console.log("Delta of " + delta/1000 + " seconds too long; ignored.");
+    return;
+  }
   var sites = JSON.parse(localStorage.sites);
   if (!sites[this._currentSite]) {
     sites[this._currentSite] = 0;

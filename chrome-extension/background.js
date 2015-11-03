@@ -29,8 +29,8 @@ function periodicClearStats() {
 }
 
 var config = new Config();
-var sites = new Sites();
-var tracker = new Tracker(sites);
+var sites = new Sites(config);
+var tracker = new Tracker(config, sites);
 sites.clear();
 
 /* Listen for update requests. These come from the popup. */
