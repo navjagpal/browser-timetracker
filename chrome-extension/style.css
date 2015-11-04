@@ -21,13 +21,19 @@ body
 	border-bottom: 1px solid #fff;
 	color: #039;
 }
-#stats td
+#stats tbody tr {
+  background-attachment:fixed;
+}
+#stats tr
 {
-	padding: 8px;
 	background: #e8edff; 
 	border-bottom: 1px solid #fff;
 	color: #669;
 	border-top: 1px solid transparent;
+}
+#stats td
+{
+	padding: 8px;
 }
 #stats tr:hover td
 {
