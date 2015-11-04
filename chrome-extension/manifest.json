@@ -4,9 +4,10 @@
   "description": "Keeps track of how much time you spend on various web sites.",
   "manifest_version": 2,
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["config.js", "sites.js", "tracker.js", "background.js"]
   },
   "permissions": [
+    "alarms",
     "idle",
     "tabs"
   ],

@@ -1,13 +1,3 @@
-function addFrame() {
-  var iframe = document.createElement("iframe");
-  iframe.setAttribute("src", "http://browser-timetracker.appspot.com/stats/view?now=" +
-                            escape(new Date().getTime()/1000));
-  iframe.setAttribute("width", "400px");
-  iframe.setAttribute("height", "400px");
-  iframe.setAttribute("id", "stats_frame");
-  document.getElementById("stats").appendChild(iframe);
-}
-
 function addIgnoredSite(new_site) {
   return function() {
     chrome.extension.sendRequest(
@@ -127,11 +117,7 @@ function initialize() {
    stats.removeChild(stats.childNodes[0]);
   }
 
-  if (localStorage["storageType"] == "appengine") {
-   addFrame();
-  } else if (localStorage["storageType"] == "local") {
-   addLocalDisplay();
-  }
+  addLocalDisplay();
 
   var link = document.getElementById("toggle_pause");
   if (localStorage["paused"] == undefined || localStorage["paused"] == "false") {
