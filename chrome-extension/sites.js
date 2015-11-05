@@ -60,12 +60,16 @@ Sites.prototype.setCurrentFocus = function(url) {
   if (url == null) {
     this._currentSite = null;
     this._startTime = null;
-    chrome.browserAction.setIcon({path: {38: 'images/icon_paused.png'}});
+    chrome.browserAction.setIcon(
+        {path: {19: 'images/icon_paused19.png',
+                38: 'images/icon_paused38.png'}});
   } else {
     this._currentSite = this.getSiteFromUrl(url);
     this._startTime = new Date();
     console.log("setCurrentFocusSite: " + this._currentSite);
-    chrome.browserAction.setIcon({path: {38: 'images/icon.png'}});
+    chrome.browserAction.setIcon(
+        {path: {19: 'images/icon19.png',
+                38: 'images/icon38.png'}});
   }
 };
 

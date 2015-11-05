@@ -13,13 +13,13 @@ function clearStats() {
     config.nextTimeToClear = 0;
     return;
   }
-  
+
   if (!config.nextTimeToClear) {
     var d = new Date();
     d.setTime(d.getTime() + config.clearStatsInterval * 1000);
     d.setMinutes(0);
     d.setSeconds(0);
-    if (config.clearStatsInterval == 86400) {
+    if (config.clearStatsInterval > 3600) {
       d.setHours(0);
     }
     config.nextTimeToClear = d.getTime();
@@ -48,7 +48,7 @@ chrome.extension.onRequest.addListener(
       config.addIgnoredSite(request.site);
       sendResponse({});
     } else {
-      console.log("Invalid action given.");
+      console.log("Invalid action given: " + request.action);
     }
   });
 

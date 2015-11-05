@@ -18,5 +18,5 @@
     "default_popup": "popup.html"
   },
   "options_page": "options.html",
-  "icons": { "128": "images/icon.png" }
+  "icons": { "19": "images/icon19.png", "38": "images/icon38.png" }
 }
