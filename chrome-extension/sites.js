@@ -10,7 +10,14 @@ function Sites(config) {
 
 Object.defineProperty(Sites.prototype, "sites", {
   get: function() {
-    return JSON.parse(localStorage.sites);
+    var s = JSON.parse(localStorage.sites);
+    var sites = {}
+    for (var site in s) {
+      if (s.hasOwnProperty(site) && !this._config.isIgnoredSite(site)) {
+        sites[site] = s[site];
+      }
+    }
+    return sites;
   }
 });
 
