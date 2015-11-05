@@ -1,3 +1,6 @@
+/**
+ * Responsible for detecting focus change from tabs and windows.
+ */
 function Tracker(config, sites) {
   this._sites = sites;
   var self = this;
@@ -12,7 +15,7 @@ function Tracker(config, sites) {
     function(activeInfo) {
       chrome.tabs.get(activeInfo.tabId, function(tab) {
         self._sites.setCurrentFocus(tab.url);
-      }); 
+      });
     }
   );
   chrome.windows.onFocusChanged.addListener(
@@ -26,7 +29,7 @@ function Tracker(config, sites) {
   );
   chrome.idle.onStateChanged.addListener(function(idleState) {
     if (idleState == "active") {
-      self._updateTimeWithCurrentTab();  
+      self._updateTimeWithCurrentTab();
     } else {
       self._sites.setCurrentFocus(null);
     }
@@ -36,7 +39,7 @@ function Tracker(config, sites) {
     {periodInMinutes: config.updateTimePeriodMinutes});
   chrome.alarms.onAlarm.addListener(function(alarm) {
     if (alarm.name == "updateTime") {
-      self._updateTimeWithCurrentTab();  
+      self._updateTimeWithCurrentTab();
     }
   });
 }
@@ -46,7 +49,10 @@ Tracker.prototype._updateTimeWithCurrentTab = function() {
   chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
     if (tabs.length == 1) {
       // Is the tab in the currently focused window? If not, assume Chrome
-      // is out of focus.
+      // is out of focus. Although we ask for the lastFocusedWindow, it's
+      // possible for that window to go out of focus quickly. If we don't do
+      // this, we risk counting time towards a tab while the user is outside of
+      // Chrome altogether.
       var url = tabs[0].url;
       chrome.windows.get(tabs[0].windowId, function(win) {
         if (!win.focused) {
