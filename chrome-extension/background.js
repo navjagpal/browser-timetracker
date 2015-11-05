@@ -37,7 +37,7 @@ var config = new Config();
 var sites = new Sites(config);
 var tracker = new Tracker(config, sites);
 
-/* Listen for update requests. These come from the popup. */
+/* Listen for requests which come from the user through the popup. */
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
     if (request.action == "clearStats") {

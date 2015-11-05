@@ -105,6 +105,7 @@ function addLocalDisplay() {
   /* Show the "Show All" link if there are some sites we didn't show. */
   if (max < sortedSites.length) {
    showAllLink.setAttribute("href", "javascript:void(0)");
+   showAllLink.setAttribute("class", "pure-button");
    showAllLink.appendChild(document.createTextNode("Show All"));
    document.getElementById("options").appendChild(showAllLink);
   }
