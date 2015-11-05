@@ -40,6 +40,10 @@ body
 	background: #d0dafd;
 	color: #339;
 }
+#stats img
+{
+  padding-right: 6px;
+}
 #stats a:link,
 #stats a:visited
 {
