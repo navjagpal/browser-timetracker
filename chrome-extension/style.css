@@ -48,11 +48,11 @@ body
 #stats a:visited
 {
   text-decoration: none;
-  color: #00E;
+  color: black;
 }
 #stats a:hover
 {
-  color: #551A8B;
+  color: #00E;
 }
 #stats a:active
 {
