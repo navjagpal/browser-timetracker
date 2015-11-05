@@ -28,22 +28,6 @@ Config.prototype.isIgnoredSite = function(site) {
   return false;
 };
 
-Object.defineProperty(Config.prototype, "paused", {
-  get: function() {
-    if (!localStorage.paused) {
-      localStorage.paused = "false";
-    }
-    return localStorage.paused == "true";
-  },
-  set: function(v) {
-    if (v == false) {
-      localStorage.paused = "false";
-    } else if (v == true) {
-      localStorage.paused = "true";
-    }
-  }
-});
-
 /**
  * Interval (seconds) for clearing statistics.
  */
