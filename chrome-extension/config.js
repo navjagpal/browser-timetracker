@@ -1,6 +1,9 @@
+/**
+ * Read and modify various configuration parameters.
+ *
+ * Abstracts away the underlying storage mechanism.
+ */
 function Config() {
-  // TODO(nav): Consider using chrome.storage API instead of
-  // localStorage directly.
   if (!localStorage.ignoredSites) {
     localStorage.ignoredSites = JSON.stringify([]);
   }
@@ -25,22 +28,9 @@ Config.prototype.isIgnoredSite = function(site) {
   return false;
 };
 
-Object.defineProperty(Config.prototype, "paused", {
-  get: function() {
-    if (!localStorage.paused) {
-      localStorage.paused = "false";
-    }
-    return localStorage.paused == "true";
-  },
-  set: function(v) {
-    if (v == false) {
-      localStorage.paused = "false";
-    } else if (v == true) {
-      localStorage.paused = "true";
-    }
-  }
-});
-
+/**
+ * Interval (seconds) for clearing statistics.
+ */
 Object.defineProperty(Config.prototype, "clearStatsInterval", {
   get: function() {
     if (!localStorage.clearStatsInterval) {
@@ -56,6 +46,9 @@ Object.defineProperty(Config.prototype, "clearStatsInterval", {
   }
 });
 
+/**
+ * Next time (Unix Epoch) for clearing statistics.
+ */
 Object.defineProperty(Config.prototype, "nextTimeToClear", {
   get: function() {
     if (!localStorage.nextTimeToClear) {
@@ -74,6 +67,9 @@ Object.defineProperty(Config.prototype, "updateTimePeriodMinutes", {
   }
 });
 
+/**
+ * Time (Unix Epoch) the stats were most recently cleared.
+ */
 Object.defineProperty(Config.prototype, "lastClearTime", {
   get: function() {
     if (!localStorage.lastClearTime) {
