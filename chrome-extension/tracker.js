@@ -28,7 +28,7 @@ function Tracker(config, sites) {
     if (idleState == "active") {
       self._updateTimeWithCurrentTab();  
     } else {
-      this._sites.setCurrentFocus(null);
+      self._sites.setCurrentFocus(null);
     }
   });
   chrome.alarms.create(
@@ -45,7 +45,15 @@ Tracker.prototype._updateTimeWithCurrentTab = function() {
   var self = this;
   chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
     if (tabs.length == 1) {
-      self._sites.setCurrentFocus(tabs[0].url);
+      // Is the tab in the currently focused window? If not, assume Chrome
+      // is out of focus.
+      var url = tabs[0].url;
+      chrome.windows.get(tabs[0].windowId, function(win) {
+        if (!win.focused) {
+          url = null;
+        }
+        self._sites.setCurrentFocus(url);
+      });
     }
   });
 };
