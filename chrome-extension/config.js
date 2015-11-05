@@ -7,8 +7,11 @@ function Config() {
 }
 
 Config.prototype.addIgnoredSite = function(site) {
+  if (this.isIgnoredSite(site)) {
+    return;
+  }
   var sites = JSON.parse(localStorage.ignoredSites);
-  sites.push(s);
+  sites.push(site);
   localStorage.ignoredSites = JSON.stringify(sites);
 };
 
@@ -46,7 +49,10 @@ Object.defineProperty(Config.prototype, "clearStatsInterval", {
     return parseInt(localStorage.clearStatsInterval, 10);
   },
   set: function(i) {
-    localStorage.clearStatsInterval = i.toString();
+    if (i != this.clearStatsInterval) {
+      localStorage.clearStatsInterval = i.toString();
+      this.nextTimeToClear = 0;
+    }
   }
 });
 
@@ -65,5 +71,17 @@ Object.defineProperty(Config.prototype, "nextTimeToClear", {
 Object.defineProperty(Config.prototype, "updateTimePeriodMinutes", {
   get: function() {
     return 1;
+  }
+});
+
+Object.defineProperty(Config.prototype, "lastClearTime", {
+  get: function() {
+    if (!localStorage.lastClearTime) {
+      localStorage.lastClearTime = "0";
+    }
+    return parseInt(localStorage.lastClearTime, 10);
+  },
+  set: function(i) {
+    localStorage.lastClearTime = i.toString();
   }
 });

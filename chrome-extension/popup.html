@@ -8,16 +8,17 @@
 
   </style>
   <link rel="stylesheet" href="style.css"></link>
+  <script src="config.js"></script>
+  <script src="sites.js"></script>
   <script src="popup.js"></script>
 
 </head>
   <body>
     <div id="options">
-      <button id="toggle_pause"></button>
       <button id="clear">Clear *All* Stats</button>&nbsp;
     </div>
-    <div id="nextClear">
-    </div>
+    <div id="lastClear"></div>
+    <div id="nextClear"></div>
     <div>
       <table id="stats">
         <thead>
@@ -27,6 +28,7 @@
             <th scope="col">Percent</th>
           </tr>
         </thead>
+        <tbody id="stats_tbody"></tbody>
       </table>
     </div>
   </body>

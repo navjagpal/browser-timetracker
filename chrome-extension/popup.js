@@ -1,3 +1,6 @@
+var config = new Config();
+var gsites = new Sites(config);
+
 function addIgnoredSite(new_site) {
   return function() {
     chrome.extension.sendRequest(
@@ -9,12 +12,14 @@ function addIgnoredSite(new_site) {
 }
 
 function addLocalDisplay() {
-  var table = document.getElementById("stats");
+  var old_tbody = document.getElementById("stats_tbody");
   var tbody = document.createElement("tbody");
-  table.appendChild(tbody);
+  tbody.setAttribute("id", "stats_tbody");
+  old_tbody.parentNode.replaceChild(tbody, old_tbody);
 
   /* Sort sites by time spent */
-  var sites = JSON.parse(localStorage.sites);
+  var sites = gsites.sites;
+  console.log("Sites = " + sites);
   var sortedSites = new Array();
   var totalTime = 0;
   for (site in sites) {
@@ -45,7 +50,10 @@ function addLocalDisplay() {
   row = setPercentageBG(row,0);
   tbody.appendChild(row);
 
-  var maxTime = sites[sortedSites[0][0]];
+  var maxTime = 0;
+  if (sortedSites.length) {
+    maxTime = sites[sortedSites[0][0]];
+  }
   var relativePct = 0;
   for (var index = 0; ((index < sortedSites.length) && (index < max));
       index++ ){
@@ -112,43 +120,26 @@ function clearStats() {
   });
 }
 
-function togglePause() {
-  console.log("In toggle pause");
-  console.log("Value = " + localStorage["paused"]);
-  if (localStorage["paused"] == "false") {
-   console.log("Setting to Resume");
-   chrome.extension.sendRequest({action: "pause"}, function(response) {});
-   document.getElementById("toggle_pause").innerHTML = "Resume Timer";
-  } else if (localStorage["paused"] == "true"){
-   console.log("Setting to Pause");
-   chrome.extension.sendRequest({action: "resume"}, function(response) {});
-   document.getElementById("toggle_pause").innerHTML = "Pause Timer";
-  }
-}
-
 function initialize() {
-  var stats = document.getElementById("stats");
-  if (stats.childNodes.length == 1) {
-   stats.removeChild(stats.childNodes[0]);
-  }
-
   addLocalDisplay();
 
-  var link = document.getElementById("toggle_pause");
-  if (localStorage["paused"] == undefined || localStorage["paused"] == "false") {
-   localStorage["paused"] = "false";
-   link.innerHTML = "Pause Timer";
-  } else {
-   link.innerHTML = "Resume Timer";
+  if (config.lastClearTime) {
+    var div = document.getElementById("lastClear");
+    if (div.childNodes.length == 1) {
+      div.removeChild(div.childNodes[0]);
+    }
+    div.appendChild(
+      document.createTextNode("Last Reset: " + new Date(
+        config.lastClearTime).toString()));
   }
 
-  var nextClearStats = localStorage["nextTimeToClear"];
+  var nextClearStats = config.nextTimeToClear;
   if (nextClearStats) {
    nextClearStats = parseInt(nextClearStats, 10);
    nextClearStats = new Date(nextClearStats);
    var nextClearDiv = document.getElementById("nextClear");
    if (nextClearDiv.childNodes.length == 1) {
-     nextClearDiv.removeChild(nextClear.childNodes[0]);
+     nextClearDiv.removeChild(nextClearDiv.childNodes[0]);
    }
    nextClearDiv.appendChild(
      document.createTextNode("Next Reset: " + nextClearStats.toString()));
@@ -157,7 +148,5 @@ function initialize() {
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("clear").addEventListener("click", clearStats);
-  document.getElementById("toggle_pause").addEventListener(
-    "click", togglePause); 
   initialize();
 });

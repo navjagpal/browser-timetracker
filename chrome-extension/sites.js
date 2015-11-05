@@ -8,6 +8,12 @@ function Sites(config) {
   this._startTime = null;
 }
 
+Object.defineProperty(Sites.prototype, "sites", {
+  get: function() {
+    return JSON.parse(localStorage.sites);
+  }
+});
+
 /**
  * Returns just the site/domain from the url. Includes the protocol.
  * chrome://extensions/some/other?blah=ffdf -> chrome://extensions
@@ -33,7 +39,7 @@ Sites.prototype._updateTime = function() {
     console.log("Delta of " + delta/1000 + " seconds too long; ignored.");
     return;
   }
-  var sites = JSON.parse(localStorage.sites);
+  var sites = this.sites;
   if (!sites[this._currentSite]) {
     sites[this._currentSite] = 0;
   }
@@ -58,4 +64,5 @@ Sites.prototype.setCurrentFocus = function(url) {
 
 Sites.prototype.clear = function() {
   localStorage.sites = JSON.stringify({});
+  this._config.lastClearTime = new Date().getTime();
 };

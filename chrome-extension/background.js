@@ -1,4 +1,4 @@
-function periodicClearStats() {
+function clearStats() {
   console.log("Checking to see if we should clear stats.");
   console.log("Clear interval of " + config.clearStatsInterval);
   if (config.clearStatsInterval < 3600) {
@@ -20,7 +20,7 @@ function periodicClearStats() {
   var now = new Date();
   if (now.getTime() > config.nextTimeToClear) {
     console.log("Yes, time to clear stats.");
-    clearStatistics();
+    sites.clear();
     var nextTimeToClear = new Date(nextTimeToClear + config.clearStatsInterval * 1000);
     console.log("Next time to clear is " + nextTimeToClear.toString());
     config.nextTimeToClear = nextTimeToClear.getTime();
@@ -31,7 +31,6 @@ function periodicClearStats() {
 var config = new Config();
 var sites = new Sites(config);
 var tracker = new Tracker(config, sites);
-sites.clear();
 
 /* Listen for update requests. These come from the popup. */
 chrome.extension.onRequest.addListener(
@@ -43,11 +42,14 @@ chrome.extension.onRequest.addListener(
     } else if (request.action == "addIgnoredSite") {
       config.addIgnoredSite(request.site);
       sendResponse({});
-    } else if (request.action == "pause") {
-      //pause();
-    } else if (request.action == "resume") {
-      //resume();
     } else {
       console.log("Invalid action given.");
     }
   });
+
+chrome.alarms.create("clearStats", {periodInMinutes: 2});
+chrome.alarms.onAlarm.addListener(function(alarm) {
+  if (alarm.name == "clearStats") {
+    clearStats(config);
+  }
+});
