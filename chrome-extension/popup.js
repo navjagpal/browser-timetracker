@@ -42,8 +42,11 @@ function addLocalDisplay() {
   cell = document.createElement("td");
   cell.appendChild(document.createTextNode(("100")));
   row.appendChild(cell);
+  row = setPercentageBG(row,0);
   tbody.appendChild(row);
 
+  var maxTime = sites[sortedSites[0][0]];
+  var relativePct = 0;
   for (var index = 0; ((index < sortedSites.length) && (index < max));
       index++ ){
    var site = sortedSites[index][0];
@@ -64,6 +67,8 @@ function addLocalDisplay() {
    cell = document.createElement("td");
    cell.appendChild(document.createTextNode(
      (sites[site] / totalTime * 100).toFixed(2)));
+   relativePct = (sites[site]/maxTime*100).toFixed(2);
+   row = setPercentageBG(row,relativePct);
    row.appendChild(cell);
    tbody.appendChild(row);
   }
@@ -80,6 +85,16 @@ function addLocalDisplay() {
    showAllLink.appendChild(document.createTextNode("Show All"));
    document.getElementById("options").appendChild(showAllLink);
   }
+}
+
+function setPercentageBG(row,pct) {
+  var color = "#e8edff";
+  row.style.backgroundImage = "-webkit-linear-gradient(left, "+color+" "+pct+"%,#ffffff "+pct+"%)";
+  row.style.backgroundImage = "    -moz-linear-gradient(left, "+color+" "+pct+"%, #ffffff "+pct+"%)";
+  row.style.backgroundImage = "     -ms-linear-gradient(left, "+color+" "+pct+"%,#ffffff "+pct+"%)";
+  row.style.backgroundImage = "      -o-linear-gradient(left, "+color+" "+pct+"%,#ffffff "+pct+"%)";
+  row.style.backgroundImage = "         linear-gradient(to right, "+color+" "+pct+"%,#ffffff "+pct+"%)";
+  return row;
 }
 
 function sendStats() {
