@@ -1,3 +1,8 @@
+/**
+ * Stores the time that is spent on each site.
+ *
+ * The primary interface to this class is through setCurrentFocus.
+ */
 function Sites(config) {
   this._config = config;
   if (!localStorage.sites) {
@@ -8,6 +13,9 @@ function Sites(config) {
   this._startTime = null;
 }
 
+/**
+ * Returns the a dictionary of site -> seconds.
+ */
 Object.defineProperty(Sites.prototype, "sites", {
   get: function() {
     var s = JSON.parse(localStorage.sites);
@@ -37,7 +45,6 @@ Sites.prototype.getSiteFromUrl = function(url) {
 
 Sites.prototype._updateTime = function() {
   if (!this._currentSite || !this._startTime) {
-    console.log("no site or time");
     return;
   }
   var delta = new Date() - this._startTime;
@@ -51,9 +58,13 @@ Sites.prototype._updateTime = function() {
     sites[this._currentSite] = 0;
   }
   sites[this._currentSite] += delta/1000;
-  localStorage.sites = JSON.stringify(sites); 
+  localStorage.sites = JSON.stringify(sites);
 };
 
+/**
+ * This method should be called whenever there is a potential focus change.
+ * Provide url=null if Chrome is out of focus.
+ */
 Sites.prototype.setCurrentFocus = function(url) {
   console.log("setCurrentFocus: " + url);
   this._updateTime();
@@ -73,6 +84,9 @@ Sites.prototype.setCurrentFocus = function(url) {
   }
 };
 
+/**
+ * Clear all statistics.
+ */
 Sites.prototype.clear = function() {
   localStorage.sites = JSON.stringify({});
   this._config.lastClearTime = new Date().getTime();
