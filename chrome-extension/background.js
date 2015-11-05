@@ -1,6 +1,14 @@
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-45267314-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 function clearStats() {
-  console.log("Checking to see if we should clear stats.");
-  console.log("Clear interval of " + config.clearStatsInterval);
   if (config.clearStatsInterval < 3600) {
     config.nextTimeToClear = 0;
     return;
@@ -14,15 +22,12 @@ function clearStats() {
     if (config.clearStatsInterval == 86400) {
       d.setHours(0);
     }
-    console.log("Next time to clear is " + d.toString());
     config.nextTimeToClear = d.getTime();
   }
   var now = new Date();
   if (now.getTime() > config.nextTimeToClear) {
-    console.log("Yes, time to clear stats.");
     sites.clear();
     var nextTimeToClear = new Date(nextTimeToClear + config.clearStatsInterval * 1000);
-    console.log("Next time to clear is " + nextTimeToClear.toString());
     config.nextTimeToClear = nextTimeToClear.getTime();
     return;
   }

@@ -1,3 +1,13 @@
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-45267314-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 var config = new Config();
 var gsites = new Sites(config);
 
@@ -19,7 +29,6 @@ function addLocalDisplay() {
 
   /* Sort sites by time spent */
   var sites = gsites.sites;
-  console.log("Sites = " + sites);
   var sortedSites = new Array();
   var totalTime = 0;
   for (site in sites) {
@@ -148,5 +157,11 @@ function initialize() {
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("clear").addEventListener("click", clearStats);
+  var buttons = document.querySelectorAll("button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener("click", function(e) {
+      _gaq.push(["_trackEvent", e.target.id, "clicked"]);
+    });
+  } 
   initialize();
 });
