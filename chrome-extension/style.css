@@ -40,3 +40,17 @@ body
 	background: #d0dafd;
 	color: #339;
 }
+#stats a:link,
+#stats a:visited
+{
+  text-decoration: none;
+  color: #00E;
+}
+#stats a:hover
+{
+  color: #551A8B;
+}
+#stats a:active
+{
+  color: red;
+}

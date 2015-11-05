@@ -76,7 +76,13 @@ function addLocalDisplay() {
    removeImage.height = 10;
    removeImage.onclick = addIgnoredSite(site);
    cell.appendChild(removeImage);
-   cell.appendChild(document.createTextNode(site));
+   var a = document.createElement('a');
+   var linkText = document.createTextNode(site);
+   a.appendChild(linkText);
+   a.title = "Open link in new tab";
+   a.href = site;
+   a.target = "_blank";
+   cell.appendChild(a);
    row.appendChild(cell);
    cell = document.createElement("td");
    cell.appendChild(document.createTextNode((sites[site] / 60).toFixed(2)));
