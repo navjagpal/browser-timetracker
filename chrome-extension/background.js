@@ -41,7 +41,6 @@ var tracker = new Tracker(config, sites);
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
     if (request.action == "clearStats") {
-      console.log("Clearing statistics by request.");
       sites.clear();
       sendResponse({});
     } else if (request.action == "addIgnoredSite") {

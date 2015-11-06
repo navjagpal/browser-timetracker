@@ -77,7 +77,6 @@ Sites.prototype.setCurrentFocus = function(url) {
   } else {
     this._currentSite = this.getSiteFromUrl(url);
     this._startTime = new Date();
-    console.log("setCurrentFocusSite: " + this._currentSite);
     chrome.browserAction.setIcon(
         {path: {19: 'images/icon19.png',
                 38: 'images/icon38.png'}});

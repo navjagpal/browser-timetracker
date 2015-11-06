@@ -96,18 +96,21 @@ function addLocalDisplay() {
    tbody.appendChild(row);
   }
 
-  /* Add an option to show all stats */
-  var showAllLink = document.createElement("a");
-  showAllLink.onclick = function() {
-   chrome.tabs.create({url: "popup.html?show=all"});
-  }
-
   /* Show the "Show All" link if there are some sites we didn't show. */
-  if (max < sortedSites.length) {
-   showAllLink.setAttribute("href", "javascript:void(0)");
-   showAllLink.setAttribute("class", "pure-button");
-   showAllLink.appendChild(document.createTextNode("Show All"));
-   document.getElementById("options").appendChild(showAllLink);
+  if (max < sortedSites.length && document.getElementById("show") == null) {
+    /* Add an option to show all stats */
+    var showAllLink = document.createElement("a");
+    showAllLink.onclick = function() {
+     chrome.tabs.create({url: "popup.html?show=all"});
+    }
+    showAllLink.setAttribute("id", "show");
+    showAllLink.setAttribute("href", "javascript:void(0)");
+    showAllLink.setAttribute("class", "pure-button");
+    showAllLink.appendChild(document.createTextNode("Show All"));
+    document.getElementById("options").appendChild(showAllLink);
+  } else if (document.getElementById("show") != null) {
+    var showLink = document.getElementById("show");
+    showLink.parentNode.removeChild(showLink);
   }
 }
 
@@ -130,7 +133,6 @@ function sendStats() {
 }
 
 function clearStats() {
-  console.log("Request to clear stats.");
   chrome.extension.sendRequest({action: "clearStats"}, function(response) {
    initialize();
   });
