@@ -21,6 +21,31 @@ function addIgnoredSite(new_site) {
   };
 }
 
+function secondsToString(seconds) {
+  var years = Math.floor(seconds / 31536000);
+  var days = Math.floor((seconds % 31536000) / 86400); 
+  var hours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+  var mins = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+  var secs = (((seconds % 31536000) % 86400) % 3600) % 60;
+  var s = "";
+  if (years) {
+    s = s + " " + years + "y";
+  }
+  if (days) {
+    s = s + " " + days + "d";
+  }
+  if (hours) {
+    s = s + " " + hours + "h";
+  }
+  if (mins) {
+    s = s + " " + mins + "m";
+  }
+  if (secs) {
+    s = s + " " + secs.toFixed(0) + "s";
+  }
+  return s;
+}
+
 function addLocalDisplay() {
   var old_tbody = document.getElementById("stats_tbody");
   var tbody = document.createElement("tbody");
@@ -51,7 +76,7 @@ function addLocalDisplay() {
   cell.innerHTML = "<b>Total</b>";
   row.appendChild(cell);
   cell = document.createElement("td");
-  cell.appendChild(document.createTextNode((totalTime / 60).toFixed(2)));
+  cell.appendChild(document.createTextNode(secondsToString(totalTime)));
   row.appendChild(cell);
   cell = document.createElement("td");
   cell.appendChild(document.createTextNode(("100")));
@@ -85,7 +110,7 @@ function addLocalDisplay() {
    cell.appendChild(a);
    row.appendChild(cell);
    cell = document.createElement("td");
-   cell.appendChild(document.createTextNode((sites[site] / 60).toFixed(2)));
+   cell.appendChild(document.createTextNode(secondsToString(sites[site])));
    row.appendChild(cell);
    cell = document.createElement("td");
    cell.appendChild(document.createTextNode(

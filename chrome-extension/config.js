@@ -81,3 +81,22 @@ Object.defineProperty(Config.prototype, "lastClearTime", {
     localStorage.lastClearTime = i.toString();
   }
 });
+
+/**
+ * The current idle state of the user.
+ */
+Object.defineProperty(Config.prototype, "idle", {
+  get: function() {
+    if (!localStorage.nextTimeToClear) {
+      localStorage.idle = "false";
+    }
+    return localStorage.idle == "true";
+  },
+  set: function(i) {
+    if (i) {
+      localStorage.idle = "true"; 
+    } else {
+      localStorage.idle = "false";
+    }
+  }
+});
