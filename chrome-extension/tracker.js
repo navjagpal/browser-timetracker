@@ -29,8 +29,10 @@ function Tracker(config, sites) {
   );
   chrome.idle.onStateChanged.addListener(function(idleState) {
     if (idleState == "active") {
+      config.idle = false;
       self._updateTimeWithCurrentTab();
     } else {
+      config.idle = true;
       self._sites.setCurrentFocus(null);
     }
   });
@@ -39,7 +41,23 @@ function Tracker(config, sites) {
     {periodInMinutes: config.updateTimePeriodMinutes});
   chrome.alarms.onAlarm.addListener(function(alarm) {
     if (alarm.name == "updateTime") {
-      self._updateTimeWithCurrentTab();
+      // These event gets fired on a periodic basis and isn't triggered
+      // by a user event, like the tabs/windows events. Because of that,
+      // we need to ensure the user is not idle or we'll track time for
+      // the current tab forever.
+      if (!config.idle) {
+        self._updateTimeWithCurrentTab();
+      }
+      // Force a check of the idle state to ensure that we transition
+      // back from idle to active as soon as possible.
+      chrome.idle.queryState(60, function(idleState) {
+        if (idleState == "active") {
+          config.idle = false;
+        } else {
+          config.idle = true;
+          self._sites.setCurrentFocus(null);
+        }
+      });
     }
   });
 }
