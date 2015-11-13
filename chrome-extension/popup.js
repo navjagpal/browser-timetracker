@@ -135,7 +135,7 @@ function addLocalDisplay() {
     showAllLink.setAttribute("href", "javascript:void(0)");
     showAllLink.setAttribute("class", "pure-button");
     showAllLink.appendChild(document.createTextNode("Show All"));
-    document.getElementById("options").appendChild(showAllLink);
+    document.getElementById("button_row").appendChild(showAllLink);
   } else if (document.getElementById("show") != null) {
     var showLink = document.getElementById("show");
     showLink.parentNode.removeChild(showLink);
