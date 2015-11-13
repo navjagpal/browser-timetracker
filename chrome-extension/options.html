@@ -1,11 +1,14 @@
 <html>
   <head><title>Time Tracker Preferences</title></head>
   <script src="config.js"></script>
+  <script src="sites.js"></script>
   <script src="options.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="buttons.css"/>
 
   <body>
     <b>Time Display</b>:
-    <select id="time_display">
+    <select id="time_display" class="pure-input-1-2">
       <option value="0">Pretty</option>
       <option value="1">Minutes</option>
     </select>
@@ -23,6 +26,7 @@
       <option value="3600">Hour</option>
       <option value="86400">Day</option>
       <option value="604800">Week</option>
-    </select>
+    </select><br/>
+    <button id="download" class="pure-button">Download CSV</button><br/>
   </body>
 </html>
