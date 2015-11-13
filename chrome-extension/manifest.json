@@ -1,6 +1,6 @@
 {
   "name": "Time Tracker",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Keeps track of how much time you spend on various web sites.",
   "manifest_version": 2,
   "background": {
