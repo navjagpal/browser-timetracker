@@ -9,6 +9,11 @@ function Config() {
   }
 }
 
+Config.timeDisplayFormatEnum = {
+  PRETTY: 0,
+  MINUTES: 1
+}
+
 Config.prototype.addIgnoredSite = function(site) {
   if (this.isIgnoredSite(site)) {
     return;
@@ -27,6 +32,21 @@ Config.prototype.isIgnoredSite = function(site) {
   }
   return false;
 };
+
+/**
+ * Display format for popup.
+ */
+Object.defineProperty(Config.prototype, "timeDisplayFormat", {
+  get: function() {
+    if (!localStorage.timeDisplayFormat) {
+      localStorage.timeDisplayFormat = Config.timeDisplayFormatEnum.PRETTY;
+    }
+    return localStorage.timeDisplayFormat;
+  },
+  set: function(i) {
+    localStorage.timeDisplayFormat = i;
+  }
+});
 
 /**
  * Interval (seconds) for clearing statistics.

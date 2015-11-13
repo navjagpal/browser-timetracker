@@ -18,6 +18,13 @@ function updateClearStatsInterval() {
   restoreOptions();
 }
 
+function updateTimeDisplay() {
+  var select = document.getElementById("time_display");
+  var option = select.options[select.selectedIndex];
+  config.timeDisplayFormat = option.value;
+  restoreOptions();
+}
+
 function addIgnoredSite() {
   var newSite = document.getElementById("new_ignored_site").value;
   if (newSite.indexOf("http://") != 0 &&
@@ -71,6 +78,16 @@ function restoreOptions() {
       break;
     }
   }
+
+  var timeDisplay = config.timeDisplayFormat;
+  select = document.getElementById("time_display");
+  for (var i = 0; i < select.options.length; i++) {
+    var option = select.options[i];
+    if (option.value == timeDisplay) {
+      option.selected = true;
+      break;
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -80,6 +97,8 @@ document.addEventListener("DOMContentLoaded", function () {
     "click", removeIgnoredSites);
   document.getElementById("clear_stats_interval").addEventListener(
     "change", updateClearStatsInterval);
+  document.getElementById("time_display").addEventListener(
+    "change", updateTimeDisplay);
   restoreOptions();
 });
 

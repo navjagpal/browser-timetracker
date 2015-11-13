@@ -22,8 +22,11 @@ function addIgnoredSite(new_site) {
 }
 
 function secondsToString(seconds) {
+  if (config.timeDisplayFormat == Config.timeDisplayFormatEnum.MINUTES) {
+    return (seconds/60).toFixed(2);
+  }
   var years = Math.floor(seconds / 31536000);
-  var days = Math.floor((seconds % 31536000) / 86400); 
+  var days = Math.floor((seconds % 31536000) / 86400);
   var hours = Math.floor(((seconds % 31536000) % 86400) / 3600);
   var mins = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
   var secs = (((seconds % 31536000) % 86400) % 3600) % 60;
