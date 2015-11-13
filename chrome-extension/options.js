@@ -9,6 +9,7 @@ _gaq.push(['_trackPageview']);
 })();
 
 var config = new Config();
+var sites = new Sites(config);
 
 function updateClearStatsInterval() {
   var select = document.getElementById("clear_stats_interval");
@@ -90,6 +91,19 @@ function restoreOptions() {
   }
 }
 
+function download() {
+  var csvContent = "data:text/csv;charset=utf-8,";
+  var sitesDict = sites.sites;
+  var pairs = [];
+  for (var site in sitesDict) {
+    if (sitesDict.hasOwnProperty(site)) {
+      pairs.push(site + "," + sitesDict[site]);
+    }
+  }
+  csvContent += pairs.join("\n");
+  window.open(encodeURI(csvContent));
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("add_ignored").addEventListener(
     "click", addIgnoredSite);
@@ -99,6 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
     "change", updateClearStatsInterval);
   document.getElementById("time_display").addEventListener(
     "change", updateTimeDisplay);
+  document.getElementById("download").addEventListener(
+    "click", download);
   restoreOptions();
 });
 
