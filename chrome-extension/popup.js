@@ -193,7 +193,8 @@ function initialize() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("clear").addEventListener("click", clearStats);
+  document.getElementById("clear").addEventListener("click",
+    function() { if (confirm("Are you sure?")) { clearStats(); }});
   document.getElementById("options").addEventListener("click",
       function() { chrome.runtime.openOptionsPage(); });
   var buttons = document.querySelectorAll("button");
